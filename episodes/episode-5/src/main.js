@@ -3,25 +3,13 @@ import Adapter from "../../adapter.js";
 import Shader from "./shader.js";
 import Matrix from "./matrix.js";
 
-const vertexPositions = [ // set the Z component to 0.0 so that our object is centered
-    -0.5, 0.5, 0.0,
-    -0.5, -0.5, 0.0,
-    0.5, -0.5, 0.0,
-    0.5, 0.5, 0.0,
-];
-
-const indices = [
-    0, 1, 2, // first triangle
-    0, 2, 3, // second triangle
-];
-
 class Window {
     constructor() {
         this.gl = document.getElementById("game").getContext("webgl2", {
             depth: true,
             antialias: true
         });
-
+        
         this.adapter = new Adapter(this);
     }
 
@@ -54,7 +42,7 @@ class Window {
 
         // create shader
 
-        this.shader = new Shader(this.gl, "./src/vert.glsl", "./src/frag.glsl");
+        this.shader = new Shader(gl, "./src/vert.glsl", "./src/frag.glsl");
         await this.shader.loadShaders();
         this.shaderMatrixLocation = this.shader.findUniform("matrix");
         this.shader.use();
