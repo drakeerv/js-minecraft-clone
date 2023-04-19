@@ -32,13 +32,13 @@ class TextureManager {
     }
 
     generateMipmaps() {
-        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.textureArray) // make sure our texture is bound
-        gl.generateMipmap(gl.TEXTURE_2D_ARRAY) // generate mipmaps for our texture
+        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.textureArray); // make sure our texture is bound
+        gl.generateMipmap(gl.TEXTURE_2D_ARRAY); // generate mipmaps for our texture
     }
 
     async addTexture(texture) {
         if (!this.textures.includes(texture)) { // check to see if our texture has not yet been added
-            this.textures.push(texture) // add it to our textures list if not
+            this.textures.push(texture); // add it to our textures list if not
 
             const textureImage = await pygletAdapter.image.load(`src/textures/${texture}.png`); // load and get the image data of the texture we want
             gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.textureArray); // make sure our texture array is bound
