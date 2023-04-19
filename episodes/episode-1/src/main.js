@@ -1,4 +1,7 @@
-import {PygletWindowAdapter} from "../../adapter.js";
+"use strict";
+
+import { PygletWindowAdapter, pygletAdapter } from "../../adapter.js";
+const gl = pygletAdapter.gl;
 
 class Window extends PygletWindowAdapter {
     async onDraw() {

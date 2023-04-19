@@ -1,5 +1,5 @@
-if (!window.gl) {
-    window.gl = document.getElementById("game").getContext("webgl2", {
+if (!window.glInstance) {
+    window.glInstance = document.getElementById("game").getContext("webgl2", {
         depth: true,
         antialias: true
     });
@@ -50,6 +50,7 @@ class PygletAdapter {
     constructor() {
         this.clock = new PygletClock();
         this.image = new pygletImage();
+        this.gl = window.glInstance;
     }
 }
 
@@ -68,8 +69,8 @@ class PygletWindowAdapter {
 
     resize() {
         const { innerWidth: width, innerHeight: height } = window;
-        gl.canvas.width = width;
-        gl.canvas.height = height;
+        glInstance.canvas.width = width;
+        glInstance.canvas.height = height;
         this.onResize(width, height);
     }
 
@@ -89,5 +90,6 @@ if (!window.pygletAdapt) {
 }
 
 const pygletAdapter = window.pygletAdapter;
+const gl = window.glInstance;
 
-export { PygletWindowAdapter, pygletAdapter };
+export { PygletWindowAdapter, pygletAdapter};

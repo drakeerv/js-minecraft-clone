@@ -1,4 +1,7 @@
+"use strict";
+
 import { PygletWindowAdapter, pygletAdapter } from "../../adapter.js";
+const gl = pygletAdapter.gl;
 
 import Shader from "./shader.js";
 import Matrix from "./matrix.js";

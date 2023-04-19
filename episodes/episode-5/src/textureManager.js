@@ -1,4 +1,7 @@
+"use strict";
+
 import { pygletAdapter } from "../../adapter.js";
+const gl = pygletAdapter.gl;
 
 class TextureManager {
     constructor(textureWidth, textureHeight, maxTextures) {

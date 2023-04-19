@@ -1,12 +1,17 @@
+"use strict";
+
+import { pygletAdapter } from "../../adapter.js";
+const gl = pygletAdapter.gl;
+
 class ShaderError extends Error {
-    constructor (message) {
+    constructor(message) {
         super(message);
         this.name = "ShaderError";
     }
 }
 
 class Shader {
-    constructor (vertPath, fragPath) {
+    constructor(vertPath, fragPath) {
         this.vertPath = vertPath;
         this.fragPath = fragPath;
 
@@ -19,13 +24,13 @@ class Shader {
         this.fragShader = gl.createShader(gl.FRAGMENT_SHADER);
 
         // create shader program
-        
+
         this.program = gl.createProgram();
     }
 
-    async createShader (target, sourcePath) {
+    async createShader(target, sourcePath) {
         const response = await fetch(sourcePath);
-        
+
         if (!response.ok) {
             throw new ShaderError(`Could not load ${sourcePath} shader: ${response.status}`);
         }
@@ -40,7 +45,7 @@ class Shader {
         }
     }
 
-    async loadShaders () {
+    async loadShaders() {
         // load and compile shaders using promise.all
 
         await Promise.all([
@@ -54,18 +59,18 @@ class Shader {
         gl.attachShader(this.program, this.fragShader);
 
         // link shaders and cleanup
-        
+
         gl.linkProgram(this.program);
 
         gl.deleteShader(this.vertShader);
         gl.deleteShader(this.fragShader);
     }
 
-    delete () {
+    delete() {
         gl.deleteProgram(this.program);
     }
 
-    use () {
+    use() {
         gl.useProgram(this.program);
     }
 }

@@ -1,21 +1,24 @@
-import { PygletWindowAdapter } from "../../adapter.js";
+"use strict";
+
+import { PygletWindowAdapter, pygletAdapter } from "../../adapter.js";
+const gl = pygletAdapter.gl;
 
 import Shader from "./shader.js";
 
 const vertexPositions = [ // 3d coordinates for each vertex
-	-0.5,  0.5, 1.0,
-	-0.5, -0.5, 1.0,
-	 0.5, -0.5, 1.0,
-	 0.5,  0.5, 1.0,
+    -0.5, 0.5, 1.0,
+    -0.5, -0.5, 1.0,
+    0.5, -0.5, 1.0,
+    0.5, 0.5, 1.0,
 ];
 
 const indices = [
-	0, 1, 2, // first triangle
-	0, 2, 3, // second triangle
+    0, 1, 2, // first triangle
+    0, 2, 3, // second triangle
 ];
 
 class Window extends PygletWindowAdapter {
-    async onInit () {
+    async onInit() {
         // create vertex array object
 
         this.vao = gl.createVertexArray();
@@ -45,7 +48,7 @@ class Window extends PygletWindowAdapter {
         this.shader.use();
     }
 
-    async onDraw () {
+    async onDraw() {
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
@@ -59,11 +62,11 @@ class Window extends PygletWindowAdapter {
 }
 
 class Game {
-    constructor () {
+    constructor() {
         this.window = new Window();
     }
 
-    run () {
+    run() {
         this.window.run();
     }
 }

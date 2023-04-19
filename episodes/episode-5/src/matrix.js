@@ -1,3 +1,5 @@
+"use strict";
+
 function copyMatrix(matrix) {
   return matrix.map((row) => row.slice());
 }

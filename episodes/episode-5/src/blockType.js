@@ -1,3 +1,5 @@
+"use strict";
+
 import * as Numbers from "./numbers.js"; // import numbers.js file
 
 class BlockType {

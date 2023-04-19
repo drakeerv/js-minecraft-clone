@@ -1,4 +1,7 @@
+"use strict";
+
 import { PygletWindowAdapter, pygletAdapter } from "../../adapter.js";
+const gl = pygletAdapter.gl;
 
 import Shader from "./shader.js";
 import Matrix from "./matrix.js";
@@ -56,7 +59,7 @@ class Window extends PygletWindowAdapter {
 
         // create shader
 
-        this.shader = new Shader(gl, "./src/vert.glsl", "./src/frag.glsl");
+        this.shader = new Shader("./src/vert.glsl", "./src/frag.glsl");
         await this.shader.loadShaders();
         this.shaderMatrixLocation = this.shader.findUniform("matrix");
         this.shaderSamplerLocation = this.shader.findUniform("texture_array_sampler");
@@ -103,7 +106,7 @@ class Window extends PygletWindowAdapter {
 
         gl.enable(gl.DEPTH_TEST); // enable depth testing so faces are drawn in the right order
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         gl.drawElements(
             gl.TRIANGLES,
