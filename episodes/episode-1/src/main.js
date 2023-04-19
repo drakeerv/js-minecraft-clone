@@ -1,9 +1,9 @@
 "use strict";
 
-import { PygletWindowAdapter, pygletAdapter } from "../../adapter.js";
+import pygletAdapter from "../../adapter.js";
 const gl = pygletAdapter.gl;
 
-class Window extends PygletWindowAdapter {
+class Window extends pygletAdapter.window.Window {
     async onDraw() {
         gl.clearColor(1.0, 0.5, 1.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);

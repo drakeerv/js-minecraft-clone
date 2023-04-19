@@ -5,6 +5,38 @@ if (!window.glInstance) {
     });
 }
 
+class PygletWindow {
+    constructor() {
+        window.addEventListener("resize", this.resize.bind(this));
+        this.resize();
+    }
+
+    draw() {
+        this.onDraw();
+        window.requestAnimationFrame(this.draw.bind(this));
+    }
+
+    async onDraw() {}
+
+    resize() {
+        const { innerWidth: width, innerHeight: height } = window;
+        glInstance.canvas.width = width;
+        glInstance.canvas.height = height;
+        this.onResize(width, height);
+    }
+
+    async onResize(width, height) {}
+
+    run() {
+        alert("run")
+        this.init().then(() => {
+            window.requestAnimationFrame(this.draw.bind(this));
+        });
+    }
+
+    async init() {}
+}
+
 class PygletClock {
     constructor() {
         this.intervals = {};
@@ -48,41 +80,11 @@ class pygletImage {
 
 class PygletAdapter {
     constructor() {
+        this.window = {Window: PygletWindow}
         this.clock = new PygletClock();
         this.image = new pygletImage();
         this.gl = window.glInstance;
     }
-}
-
-class PygletWindowAdapter {
-    constructor() {
-        window.addEventListener("resize", this.resize.bind(this));
-        this.resize();
-    }
-
-    draw() {
-        this.onDraw();
-        window.requestAnimationFrame(this.draw.bind(this));
-    }
-
-    async onDraw() {}
-
-    resize() {
-        const { innerWidth: width, innerHeight: height } = window;
-        glInstance.canvas.width = width;
-        glInstance.canvas.height = height;
-        this.onResize(width, height);
-    }
-
-    async onResize(width, height) {}
-
-    run() {
-        this.onInit().then(() => {
-            window.requestAnimationFrame(this.draw.bind(this));
-        });
-    }
-
-    async onInit() {}
 }
 
 if (!window.pygletAdapt) {
@@ -90,6 +92,5 @@ if (!window.pygletAdapt) {
 }
 
 const pygletAdapter = window.pygletAdapter;
-const gl = window.glInstance;
 
-export { PygletWindowAdapter, pygletAdapter};
+export default pygletAdapter;

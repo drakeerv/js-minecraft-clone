@@ -5,6 +5,7 @@ const gl = pygletAdapter.gl;
 
 import Shader from "./shader.js";
 import Matrix from "./matrix.js";
+import Camera from "./camera.js";
 
 import BlockType from "./blockType.js";
 import TextureManager from "./textureManager.js";
@@ -65,37 +66,27 @@ class Window extends pygletAdapter.window.Window {
         this.shaderSamplerLocation = this.shader.findUniform("texture_array_sampler");
         this.shader.use();
 
-        // create matrices
-
-        this.mvMatrix = new Matrix(); // modelview
-        this.pMatrix = new Matrix(); // projection
-
-        this.x = 0; // temporary variable
-
+        // pyglet stuff
+        
         pygletAdapter.clock.scheduleInterval(this.update.bind(this), 1000 / 60);
+        this.mouseCaptured = false;
+
+        // camera stuff
+
+        this.camera = new Camera(this.shader, 100, 100);
     }
 
     async update(deltaTime) {
-        this.x += deltaTime;
+        if (!this.mouseCaptured) {
+            this.camera.input = [0, 0, 0];
+        }
+
+		this.camera.updateCamera(deltaTime)
     }
 
     async onDraw() {
-        // create projection matrix
-
-        this.pMatrix.loadIdentity();
-        this.pMatrix.perspective(90, gl.canvas.width / gl.canvas.height, 0.1, 500);
-
-        // create model view matrix
-
-        this.mvMatrix.loadIdentity();
-        this.mvMatrix.translate(0, 0, -3);
-        this.mvMatrix.rotate2d(this.x, Math.sin(this.x / 3 * 2) / 2);
-
-        // modelviewprojection matrix
-
-        const mvpMatrix = this.pMatrix.multiply(this.mvMatrix);
-        this.shader.uniformMatrix(this.shaderMatrixLocation, mvpMatrix.data);
-
+        this.camera.updateMatrices();
+        
         // bind textures
 
         gl.activeTexture(gl.TEXTURE0); // set our active texture unit to the first texture unit
@@ -115,9 +106,62 @@ class Window extends pygletAdapter.window.Window {
             0);
     }
 
+    // input functions
+    
     async onResize(width, height) {
         console.log(`Resize ${width} * ${height}`);
         gl.viewport(0, 0, width, height);
+
+        this.camera.width = width;
+        this.camera.height = height;
+    }
+
+    async onMousePress(x, y, button, modifiers) {
+        
+    }
+
+    async onMouseMotion(x, y, deltaX, deltaY) {
+        
+    }
+
+    async onKeyPress(key) {
+        if (!this.mouseCaptured) {
+            return;
+        }
+
+        if (key == "KeyD") {
+            this.camera.input[0] += 1;
+        } else if (key == "KeyA") {
+            this.camera.input[0] -= 1;
+        } else if (key == "KeyW") {
+            this.camera.input[2] += 1;
+        } else if (key == "KeyS") {
+            this.camera.input[2] -= 1;
+        } else if (key == "Space") {
+            self.camera.input[1] += 1;
+        } else if (key == "ShiftLeft") {
+            self.camera.input[1] -= 1;
+        }
+    }
+
+    async onKeyRelease(key, modifiers) {
+        if (!this.mouseCaptured) {
+            return;
+        }
+
+        if (key == "KeyD") {
+            this.camera.input[0] -= 1;
+        } else if (key == "KeyA") {
+            this.camera.input[0] += 1;
+        } else if (key == "KeyW") {
+            this.camera.input[2] -= 1;
+        } else if (key == "KeyS") {
+            this.camera.input[2] += 1;
+        } else if (key == "Space") {
+            self.camera.input[1] -= 1;
+        } else if (key == "ShiftLeft") {
+            self.camera.input[1] += 1;
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 "use strict";
 
-import { PygletWindowAdapter, pygletAdapter } from "../../adapter.js";
+import pygletAdapter from "../../adapter.js";
 const gl = pygletAdapter.gl;
 
 import Shader from "./shader.js";
@@ -17,8 +17,8 @@ const indices = [
     0, 2, 3, // second triangle
 ];
 
-class Window extends PygletWindowAdapter {
-    async onInit() {
+class Window extends pygletAdapter.window.Window {
+    async init() {
         // create vertex array object
 
         this.vao = gl.createVertexArray();

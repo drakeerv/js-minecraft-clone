@@ -29,8 +29,7 @@ function multiplyMatrices(xMatrix, yMatrix) {
 }
 
 function radians(degrees) {
-  var pi = Math.PI;
-  return degrees * (pi / 180);
+  return degrees * (Math.PI / 180);
 }
 
 class Matrix {

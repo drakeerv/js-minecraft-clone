@@ -1,6 +1,6 @@
 "use strict";
 
-import { pygletAdapter } from "../../adapter.js";
+import pygletAdapter from "../../adapter.js";
 const gl = pygletAdapter.gl;
 
 class ShaderError extends Error {
