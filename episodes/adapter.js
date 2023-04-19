@@ -27,8 +27,7 @@ class PygletWindow {
 
     async onResize(width, height) {}
 
-    run() {
-        alert("run")
+    run() {aa
         this.init().then(() => {
             window.requestAnimationFrame(this.draw.bind(this));
         });
