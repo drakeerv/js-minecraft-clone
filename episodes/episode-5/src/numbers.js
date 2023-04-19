@@ -34,4 +34,4 @@ const indices = [
     20, 21, 22, 20, 22, 23, // back
 ];
 
-export default { vertexPositions, texCoords, shading, indices };
+export { vertexPositions, texCoords, shading, indices };

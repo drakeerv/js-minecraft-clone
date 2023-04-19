@@ -1,9 +1,4 @@
-import Adapter from "../../adapter.js";
-
-const gl = document.getElementById("game").getContext("webgl2", {
-    depth: true,
-    antialias: true
-});
+import { PygletWindowAdapter } from "../../adapter.js";
 
 const vertexShaderSource = `#version 300 es
 precision mediump float;
@@ -36,68 +31,59 @@ const indices = [
 	0, 2, 3, // second triangle
 ];
 
-class Window {
-    constructor() {
-        this.gl = document.getElementById("game").getContext("webgl2", {
-            depth: true,
-            antialias: true
-        });
-
-        this.adapter = new Adapter(this);
-    }
-
+class Window extends PygletWindowAdapter {
     async onInit () {
         // create vertex shader
-        this.vertexShader = this.gl.createShader(this.gl.VERTEX_SHADER);
-        this.gl.shaderSource(this.vertexShader, vertexShaderSource);
-        this.gl.compileShader(this.vertexShader);
+        this.vertexShader = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(this.vertexShader, vertexShaderSource);
+        gl.compileShader(this.vertexShader);
 
         // create fragment shader
-        this.fragmentShader = this.gl.createShader(this.gl.FRAGMENT_SHADER);
-        this.gl.shaderSource(this.fragmentShader, fragmentShaderSource);
-        this.gl.compileShader(this.fragmentShader);
+        this.fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(this.fragmentShader, fragmentShaderSource);
+        gl.compileShader(this.fragmentShader);
 
         // create shader program
-        this.shaderProgram = this.gl.createProgram();
-        this.gl.attachShader(this.shaderProgram, this.vertexShader);
-        this.gl.attachShader(this.shaderProgram, this.fragmentShader);
-        this.gl.linkProgram(this.shaderProgram);
+        this.shaderProgram = gl.createProgram();
+        gl.attachShader(this.shaderProgram, this.vertexShader);
+        gl.attachShader(this.shaderProgram, this.fragmentShader);
+        gl.linkProgram(this.shaderProgram);
 
-        this.gl.useProgram(this.shaderProgram);
+        gl.useProgram(this.shaderProgram);
 
         // create vertex array object
 
-        this.vao = this.gl.createVertexArray();
-        this.gl.bindVertexArray(this.vao);
+        this.vao = gl.createVertexArray();
+        gl.bindVertexArray(this.vao);
 
         // create vertex buffer object
 
-        this.vbo = this.gl.createBuffer();
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vbo);
+        this.vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
 
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertexPositions), this.gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexPositions), gl.STATIC_DRAW);
 
-        this.gl.vertexAttribPointer(0, 3, this.gl.FLOAT, false, 0, 0);
-        this.gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(0);
 
         // create index buffer object
 
-        this.ibo = this.gl.createBuffer();
-        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ibo);
+        this.ibo = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
 
-        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(indices), this.gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(indices), gl.STATIC_DRAW);
     }
 
     async onDraw () {
-        this.gl.clearColor(1.0, 0.5, 1.0, 1.0);
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+        gl.clearColor(1.0, 0.5, 1.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
 
-        this.gl.drawElements(this.gl.TRIANGLES, indices.length, this.gl.UNSIGNED_INT, 0);
+        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_INT, 0);
     }
 
     async onResize(width, height) {
         console.log(`Resize ${width} * ${height}`);
-        this.gl.viewport(0, 0, width, height);
+        gl.viewport(0, 0, width, height);
     }
 }
 
@@ -107,7 +93,7 @@ class Game {
     }
 
     run () {
-        this.window.adapter.run();
+        this.window.run();
     }
 }
 

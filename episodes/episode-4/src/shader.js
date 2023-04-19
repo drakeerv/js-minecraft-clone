@@ -16,22 +16,21 @@ function flattenMatrix(array) {
 }
 
 class Shader {
-    constructor (gl, vertPath, fragPath) {
-        this.gl = gl;
+    constructor (vertPath, fragPath) {
         this.vertPath = vertPath;
         this.fragPath = fragPath;
 
         // create vertex shader
 
-        this.vertShader = this.gl.createShader(this.gl.VERTEX_SHADER);
+        this.vertShader = gl.createShader(gl.VERTEX_SHADER);
 
         // create fragment shader
 
-        this.fragShader = this.gl.createShader(this.gl.FRAGMENT_SHADER);
+        this.fragShader = gl.createShader(gl.FRAGMENT_SHADER);
 
         // create shader program
         
-        this.program = this.gl.createProgram();
+        this.program = gl.createProgram();
     }
 
     async createShader (target, sourcePath) {
@@ -42,11 +41,11 @@ class Shader {
         }
 
         const source = await response.text();
-        this.gl.shaderSource(target, source);
-        this.gl.compileShader(target);
+        gl.shaderSource(target, source);
+        gl.compileShader(target);
 
-        if (!this.gl.getShaderParameter(target, this.gl.COMPILE_STATUS)) {
-            const info = this.gl.getShaderInfoLog(target);
+        if (!gl.getShaderParameter(target, gl.COMPILE_STATUS)) {
+            const info = gl.getShaderInfoLog(target);
             throw new ShaderError(`Could not compile ${sourcePath} shader: ${info}`);
         }
     }
@@ -61,32 +60,32 @@ class Shader {
 
         // attach shaders to program
 
-        this.gl.attachShader(this.program, this.vertShader);
-        this.gl.attachShader(this.program, this.fragShader);
+        gl.attachShader(this.program, this.vertShader);
+        gl.attachShader(this.program, this.fragShader);
 
         // link shaders and cleanup
         
-        this.gl.linkProgram(this.program);
+        gl.linkProgram(this.program);
 
-        this.gl.deleteShader(this.vertShader);
-        this.gl.deleteShader(this.fragShader);
+        gl.deleteShader(this.vertShader);
+        gl.deleteShader(this.fragShader);
     }
 
     delete () {
-        this.gl.deleteProgram(this.program);
+        gl.deleteProgram(this.program);
     }
 
     findUniform (name) {
-        return this.gl.getUniformLocation(this.program, name);
+        return gl.getUniformLocation(this.program, name);
     }
 
     uniformMatrix (location, matrix) {
         // print size of matrix and size of uniform
-        this.gl.uniformMatrix4fv(location, false, flattenMatrix(matrix));
+        gl.uniformMatrix4fv(location, false, flattenMatrix(matrix));
     }
 
     use () {
-        this.gl.useProgram(this.program);
+        gl.useProgram(this.program);
     }
 }
 
