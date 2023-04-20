@@ -57,6 +57,10 @@ class Window extends pygletAdapter.window.Window {
 
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(this.grass.indices), gl.STATIC_DRAW);
 
+        // enable gl stuff
+
+        gl.enable(gl.DEPTH_TEST); // enable depth testing so faces are drawn in the right order
+
         // create shader
 
         this.shader = new Shader("./src/vert.glsl", "./src/frag.glsl");
@@ -104,7 +108,6 @@ class Window extends pygletAdapter.window.Window {
 
         // draw stuff
 
-        gl.enable(gl.DEPTH_TEST); // enable depth testing so faces are drawn in the right order
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 

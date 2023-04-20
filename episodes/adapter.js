@@ -3,7 +3,7 @@ if (!window.glInstance) {
         depth: true,
         antialias: true,
         desynchronized: true,
-        alpha: false
+        premultipliedAlpha: false
     });
 }
 
@@ -89,7 +89,7 @@ class PygletClock {
 
     #runInterval(key) {
         const intervalConfig = this.intervals[key];
-        const currentTime = performance.now();
+        const currentTime = window.performance.now();
         const elapsedTime = currentTime - intervalConfig.lastTime;
 
         if (elapsedTime >= intervalConfig.interval) {
@@ -111,7 +111,7 @@ class PygletClock {
         const randomKey = Math.random().toString(36).substring(7);
 
         this.intervals[randomKey] = {
-            lastTime: performance.now(),
+            lastTime: window.performance.now(),
             interval: interval,
             callback: callback,
             movingAverageWindow: movingAverageWindow,
