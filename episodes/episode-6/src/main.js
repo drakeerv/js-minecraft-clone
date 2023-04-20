@@ -143,23 +143,19 @@ class Window extends pygletAdapter.window.Window {
             return;
         }
 
-        if (key == "KeyD") {
+        if (key == "KeyD" && this.camera.input[0] <= 0) {
             this.camera.input[0] += 1;
-        } else if (key == "KeyA") {
+        } else if (key == "KeyA" && this.camera.input[0] >= 0) {
             this.camera.input[0] -= 1;
-        } else if (key == "KeyW") {
+        } else if (key == "KeyW" && this.camera.input[2] <= 0) {
             this.camera.input[2] += 1;
-        } else if (key == "KeyS") {
+        } else if (key == "KeyS" && this.camera.input[2] >= 0) {
             this.camera.input[2] -= 1;
-        } else if (key == "Space") {
+        } else if (key == "Space" && this.camera.input[1] <= 0) {
             this.camera.input[1] += 1;
-        } else if (key == "ShiftLeft" || key == "KeyC") {
+        } else if ((key == "ShiftLeft" || key == "KeyC") && this.camera.input[0] >= 0) {
             this.camera.input[1] -= 1;
         }
-
-        this.camera.input[0] = Math.min(Math.max(this.camera.input[0], -1), 1);
-        this.camera.input[1] = Math.min(Math.max(this.camera.input[1], -1), 1);
-        this.camera.input[2] = Math.min(Math.max(this.camera.input[2], -1), 1);
     }
 
     async onKeyRelease(key) {
