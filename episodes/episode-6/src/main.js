@@ -4,7 +4,6 @@ import pygletAdapter from "../../adapter.js";
 const gl = pygletAdapter.gl;
 
 import Shader from "./shader.js";
-import Matrix from "./matrix.js";
 import Camera from "./camera.js";
 
 import BlockType from "./blockType.js";
@@ -24,7 +23,7 @@ class Window extends pygletAdapter.window.Window {
         this.planks = new BlockType(this.textureManager, "planks", { "all": "planks" });
         this.log = new BlockType(this.textureManager, "log", { "top": "log_top", "bottom": "log_top", "sides": "log_side" });
 
-        this.textureManager.generateMipmaps() // generate mipmaps for our texture manager's texture
+        this.textureManager.generateMipmaps(); // generate mipmaps for our texture manager's texture
 
         // create vertex array object
 
@@ -62,7 +61,6 @@ class Window extends pygletAdapter.window.Window {
 
         this.shader = new Shader("./src/vert.glsl", "./src/frag.glsl");
         await this.shader.loadShaders();
-        this.shaderMatrixLocation = this.shader.findUniform("matrix");
         this.shaderSamplerLocation = this.shader.findUniform("texture_array_sampler");
         this.shader.use();
 
@@ -73,7 +71,7 @@ class Window extends pygletAdapter.window.Window {
 
         // camera stuff
 
-        this.camera = new Camera(this.shader, 100, 100);
+        this.camera = new Camera(this.shader, 0, 0);
     }
 
     async update(deltaTime) {
@@ -81,21 +79,21 @@ class Window extends pygletAdapter.window.Window {
             this.camera.input = [0, 0, 0];
         }
 
-		this.camera.updateCamera(deltaTime)
+		this.camera.updateCamera(deltaTime);
     }
 
     async onDraw() {
         this.camera.updateMatrices();
-        
+
         // bind textures
 
-        gl.activeTexture(gl.TEXTURE0); // set our active texture unit to the first texture unit
-        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.textureManager.textureArray); // bind our texture manager's texture
-        gl.uniform1i(this.shaderSamplerLocation, 0); // tell our sampler our texture is bound to the first texture unit
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.textureManager.textureArray);
+        gl.uniform1i(this.shaderSamplerLocation, 0);
 
         // draw stuff
 
-        gl.enable(gl.DEPTH_TEST); // enable depth testing so faces are drawn in the right order
+        gl.enable(gl.DEPTH_TEST);
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -116,12 +114,20 @@ class Window extends pygletAdapter.window.Window {
         this.camera.height = height;
     }
 
-    async onMousePress(x, y, button, modifiers) {
-        
+    async onMousePress() {
+        this.mouseCaptured = !this.mouseCaptured;
+        this.setExclusiveMouse(this.mouseCaptured);
     }
 
     async onMouseMotion(x, y, deltaX, deltaY) {
-        
+        if (this.mouseCaptured) {
+            const sensetivity = 0.004;
+
+            this.camera.rotation[0] -= deltaX * sensetivity; // this needs to be negative since turning to the left decreases delta_x while increasing the x rotation angle
+            this.camera.rotation[1] -= deltaY * sensetivity;
+
+            this.camera.rotation[1] = Math.max(-(Math.PI / 2), Math.min((Math.PI / 2), this.camera.rotation[1])) // clamp the camera's up / down rotation so that you can't snap your neck
+        }
     }
 
     async onKeyPress(key) {
@@ -138,13 +144,13 @@ class Window extends pygletAdapter.window.Window {
         } else if (key == "KeyS") {
             this.camera.input[2] -= 1;
         } else if (key == "Space") {
-            self.camera.input[1] += 1;
-        } else if (key == "ShiftLeft") {
-            self.camera.input[1] -= 1;
+            this.camera.input[1] += 1;
+        } else if (key == "ShiftLeft" || key == "KeyC") {
+            this.camera.input[1] -= 1;
         }
     }
 
-    async onKeyRelease(key, modifiers) {
+    async onKeyRelease(key) {
         if (!this.mouseCaptured) {
             return;
         }
@@ -158,10 +164,14 @@ class Window extends pygletAdapter.window.Window {
         } else if (key == "KeyS") {
             this.camera.input[2] += 1;
         } else if (key == "Space") {
-            self.camera.input[1] -= 1;
-        } else if (key == "ShiftLeft") {
-            self.camera.input[1] += 1;
+            this.camera.input[1] -= 1;
+        } else if (key == "ShiftLeft" || key == "KeyC") {
+            this.camera.input[1] += 1;
         }
+    }
+
+    async onPointerLockChange(captured) {
+        this.mouseCaptured = captured;
     }
 }
 
