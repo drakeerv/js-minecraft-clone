@@ -2,7 +2,6 @@ if (!window.glInstance) {
     window.glInstance = document.getElementById("game").getContext("webgl2", {
         depth: true,
         antialias: true,
-        desynchronized: true,
         premultipliedAlpha: false
     });
 }
@@ -156,5 +155,4 @@ if (!window.pygletAdapt) {
 }
 
 const pygletAdapter = window.pygletAdapter;
-
 export default pygletAdapter;

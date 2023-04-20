@@ -23,8 +23,10 @@ class Window extends pygletAdapter.window.Window {
         this.planks = new BlockType(this.textureManager, "planks", { "all": "planks" });
         this.log = new BlockType(this.textureManager, "log", { "top": "log_top", "bottom": "log_top", "sides": "log_side" });
 
-        this.textureManager.generateMipmaps(); // generate mipmaps for our texture manager's texture
-
+        // load all at once
+        await this.textureManager.loadTextures();
+        this.textureManager.generateMipmaps();
+        
         // create vertex array object
 
         this.vao = gl.createVertexArray();
@@ -57,10 +59,6 @@ class Window extends pygletAdapter.window.Window {
 
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(this.grass.indices), gl.STATIC_DRAW);
 
-        // enable gl stuff
-        
-        gl.enable(gl.DEPTH_TEST);
-
         // create shader
 
         this.shader = new Shader("./src/vert.glsl", "./src/frag.glsl");
@@ -76,6 +74,20 @@ class Window extends pygletAdapter.window.Window {
         // camera stuff
 
         this.camera = new Camera(this.shader, 0, 0);
+
+        // enable gl stuff
+
+        gl.enable(gl.DEPTH_TEST);
+
+        // bind textures
+        
+        gl.activeTexture(gl.TEXTURE0); // set our active texture unit to the first texture unit
+        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.textureManager.textureArray); // bind our texture manager's texture
+        gl.uniform1i(this.shaderSamplerLocation, 0); // tell our sampler our texture is bound to the first texture unit
+
+        // set clear color
+        
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
     }
 
     async update(deltaTime) {
@@ -89,14 +101,8 @@ class Window extends pygletAdapter.window.Window {
     async onDraw() {
         this.camera.updateMatrices();
 
-        // bind textures
-
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.textureManager.textureArray);
-        gl.uniform1i(this.shaderSamplerLocation, 0);
-
         // draw stuff
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         gl.drawElements(
