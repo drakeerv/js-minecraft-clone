@@ -156,6 +156,10 @@ class Window extends pygletAdapter.window.Window {
         } else if (key == "ShiftLeft" || key == "KeyC") {
             this.camera.input[1] -= 1;
         }
+
+        this.camera.input[0] = Math.min(Math.max(this.camera.input[0], -1), 1);
+        this.camera.input[1] = Math.min(Math.max(this.camera.input[1], -1), 1);
+        this.camera.input[2] = Math.min(Math.max(this.camera.input[2], -1), 1);
     }
 
     async onKeyRelease(key) {

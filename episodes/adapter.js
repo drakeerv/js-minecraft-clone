@@ -1,9 +1,16 @@
 if (!window.glInstance) {
-    window.glInstance = document.getElementById("game").getContext("webgl2", {
+    const glElement = document.getElementById("game");
+    const glOptions = {
         depth: true,
         antialias: true,
         premultipliedAlpha: false
-    });
+    };
+    
+    window.glInstance = glElement.getContext("webgl2", glOptions) || glElement.getContext("experimental-webgl2", glOptions);
+
+    if (!window.glInstance) {
+        alert("Could not load WebgGL2");
+    }
 }
 
 const gl = window.glInstance;
