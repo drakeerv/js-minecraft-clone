@@ -20,7 +20,6 @@ class BlockType {
             // set a specific face of the block to a certain texture
             for (let vertex = 0; vertex < 4; vertex++) {
                 this.texCoords[face * 12 + vertex * 3 + 2] = texture;
-                // invert y axis
                 this.texCoords[face * 12 + vertex * 3 + 1] = 1 - this.texCoords[face * 12 + vertex * 3 + 1];
             }
         };

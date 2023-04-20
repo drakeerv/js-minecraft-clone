@@ -130,12 +130,15 @@ class pygletImage {
     async load(path) {
         const image = new Image();
         image.src = path;
-        await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             image.onload = () => {
-                resolve();
+                resolve(image);
             };
+
+            image.onerror = () => {
+                reject();
+            }
         });
-        return image;
     }
 }
 
