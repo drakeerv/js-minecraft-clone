@@ -153,7 +153,7 @@ class Window extends pygletAdapter.window.Window {
             this.camera.input[2] -= 1;
         } else if (key == "Space" && this.camera.input[1] <= 0) {
             this.camera.input[1] += 1;
-        } else if ((key == "ShiftLeft" || key == "KeyC") && this.camera.input[0] >= 0) {
+        } else if ((key == "ShiftLeft" || key == "KeyC") && this.camera.input[1] >= 0) {
             this.camera.input[1] -= 1;
         }
     }
@@ -173,7 +173,7 @@ class Window extends pygletAdapter.window.Window {
             this.camera.input[2] += 1;
         } else if (key == "Space") {
             this.camera.input[1] -= 1;
-        } else if (key == "ShiftLeft" || key == "KeyC") {
+        } else if ((key == "ShiftLeft" || key == "KeyC") && this.camera.input[1] <= -1) {
             this.camera.input[1] += 1;
         }
     }
