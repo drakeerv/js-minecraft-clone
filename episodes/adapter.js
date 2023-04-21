@@ -24,9 +24,15 @@ class PygletWindow {
         }
     }
 
+    get hasExclusiveMouse() {
+        return document.pointerLockElement === gl.canvas;
+    }
+
     run() {
         this.init().then(() => {
             this.resize();
+
+            window.addEventListener("beforeunload", this.beforeUnload.bind(this));
             window.addEventListener("resize", this.resize.bind(this));
             window.addEventListener("keydown", this.keyPress.bind(this));
             window.addEventListener("keyup", this.keyRelease.bind(this));
@@ -46,7 +52,18 @@ class PygletWindow {
 
     async onResize(width, height) {}
 
+    beforeUnload(event) {
+        if (this.hasExclusiveMouse) {
+            this.setExclusiveMouse(false);
+            event.preventDefault();
+            event.returnValue = "Do you really want to quit?";
+        }
+    }
+
     keyPress(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
         if (event.repeat) return;
 
         this.onKeyPress(event.code, {shift: event.shiftKey, alt: event.altKey, ctrl: event.ctrlKey});
@@ -61,7 +78,7 @@ class PygletWindow {
     async onKeyRelease(key, modifiers) {}
 
     pointerLockChange(event) {
-        this.onPointerLockChange(document.pointerLockElement === gl.canvas);
+        this.onPointerLockChange(this.hasExclusiveMouse);
     }
 
     async onPointerLockChange(captured) {}
@@ -97,18 +114,24 @@ class PygletClock {
         const intervalConfig = this.intervals[key];
         const currentTime = window.performance.now();
         const elapsedTime = currentTime - intervalConfig.lastTime;
-
+    
         if (elapsedTime >= intervalConfig.interval) {
             const deltaTime = elapsedTime / 1000;
+    
+            // reset the deltaTimeHistory if there is an excessive amount of lag (> 0.5 seconds)
+            if (deltaTime > 0.5) {
+                intervalConfig.deltaTimeHistory = [];
+            }
+    
             intervalConfig.lastTime = currentTime - (elapsedTime % intervalConfig.interval);
-
-            // Calculate the moving average of the delta times
+    
+            // calculate the moving average of the delta times
             intervalConfig.deltaTimeHistory.push(deltaTime);
             if (intervalConfig.deltaTimeHistory.length > intervalConfig.movingAverageWindow) {
                 intervalConfig.deltaTimeHistory.shift();
             }
             const averageDeltaTime = intervalConfig.deltaTimeHistory.reduce((sum, value) => sum + value, 0) / intervalConfig.deltaTimeHistory.length;
-
+    
             intervalConfig.callback(averageDeltaTime);
         }
     }
