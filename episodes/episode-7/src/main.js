@@ -52,6 +52,16 @@ class Window extends pygletAdapter.window.Window {
         gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(1);
 
+        // create shading value vbo
+
+        this.shadingValueVbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.shadingValueVbo);
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.grass.shadingValues), gl.STATIC_DRAW);
+
+        gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(2);
+
         // create index buffer object
 
         this.ibo = gl.createBuffer();
