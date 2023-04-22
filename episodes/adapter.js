@@ -33,12 +33,19 @@ class PygletWindow {
             this.resize();
 
             window.addEventListener("beforeunload", this.beforeUnload.bind(this));
+
             window.addEventListener("resize", this.resize.bind(this));
+
             window.addEventListener("keydown", this.keyPress.bind(this));
             window.addEventListener("keyup", this.keyRelease.bind(this));
+
             document.addEventListener("pointerlockchange", this.pointerLockChange.bind(this));
-            gl.canvas.addEventListener("pointerdown", this.mousePress.bind(this));
-            gl.canvas.addEventListener("pointermove", this.mouseMotion.bind(this));
+
+            gl.canvas.addEventListener("mousedown", (event) => this.mousePress(event, false));
+            gl.canvas.addEventListener("mousemove", this.mouseMotion.bind(this));
+            gl.canvas.addEventListener("touchstart", (event) => this.mousePress(event, true));
+            gl.canvas.addEventListener("touchmove", this.mouseMotion.bind(this));
+
             window.requestAnimationFrame(this.draw.bind(this));
         });
     }
@@ -83,11 +90,11 @@ class PygletWindow {
 
     async onPointerLockChange(captured) {}
 
-    mousePress(event) {
-        this.onMousePress(event.clientX, event.clientY, event.button);
+    mousePress(event, isTouch = false) {
+        this.onMousePress(event.clientX, event.clientY, event.button, isTouch);
     }
 
-    async onMousePress(x, y, button) {}
+    async onMousePress(x, y, button, isTouch) {}
 
     mouseMotion(event) {
         this.onMouseMotion(event.clientX, event.clientY, event.movementX, event.movementY);
@@ -152,7 +159,6 @@ class PygletClock {
         }
     }
 }
-
 
 class pygletImage {
     constructor() {}

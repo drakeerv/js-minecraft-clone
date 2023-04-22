@@ -122,12 +122,16 @@ class Window extends pygletAdapter.window.Window {
         this.camera.height = height;
     }
 
-    async onMousePress() {
+    async onMousePress(_, __, ___, isTouch) {
+        if (isTouch) {
+            this.mouseCaptured = true;
+            return;
+        }
         this.mouseCaptured = !this.mouseCaptured;
         this.setExclusiveMouse(this.mouseCaptured);
     }
 
-    async onMouseMotion(x, y, deltaX, deltaY) {
+    async onMouseMotion(_, __, deltaX, deltaY) {
         if (this.mouseCaptured) {
             const sensetivity = 0.004;
 
@@ -135,6 +139,26 @@ class Window extends pygletAdapter.window.Window {
             this.camera.rotation[1] -= deltaY * sensetivity;
 
             this.camera.rotation[1] = Math.max(-(Math.PI / 2), Math.min((Math.PI / 2), this.camera.rotation[1])) // clamp the camera's up / down rotation so that you can't snap your neck
+        }
+    }
+
+    async onKeyPress(key) {
+        if (!this.mouseCaptured) {
+            return;
+        }
+
+        if (key == "KeyD" && this.camera.input[0] <= 0) {
+            this.camera.input[0] += 1;
+        } else if (key == "KeyA" && this.camera.input[0] >= 0) {
+            this.camera.input[0] -= 1;
+        } else if (key == "KeyW" && this.camera.input[2] <= 0) {
+            this.camera.input[2] += 1;
+        } else if (key == "KeyS" && this.camera.input[2] >= 0) {
+            this.camera.input[2] -= 1;
+        } else if (key == "Space" && this.camera.input[1] <= 0) {
+            this.camera.input[1] += 1;
+        } else if ((key == "ShiftLeft" || key == "KeyC") && this.camera.input[1] >= 0) {
+            this.camera.input[1] -= 1;
         }
     }
 
