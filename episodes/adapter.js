@@ -16,10 +16,6 @@ if (!window.glInstance) {
 const gl = window.glInstance;
 
 class PygletWindow {
-    constructor() {
-        this.lastTouchLocation = null;
-    }
-
     setExclusiveMouse(exclusive) {
         if (exclusive) {
             gl.canvas.requestPointerLock();
@@ -37,20 +33,12 @@ class PygletWindow {
             this.resize();
 
             window.addEventListener("beforeunload", this.beforeUnload.bind(this));
-
             window.addEventListener("resize", this.resize.bind(this));
-
             window.addEventListener("keydown", this.keyPress.bind(this));
             window.addEventListener("keyup", this.keyRelease.bind(this));
-
             document.addEventListener("pointerlockchange", this.pointerLockChange.bind(this));
-
-            gl.canvas.addEventListener("mousedown", (event) => this.mousePress(event, false));
-            gl.canvas.addEventListener("mousemove", (event) => this.mouseMotion(event, false));
-            gl.canvas.addEventListener("touchstart", (event) => this.mousePress(event, true));
-            gl.canvas.addEventListener("touchmove", (event) => this.mouseMotion(event, true));
-            gl.canvas.addEventListener("touchend", (event) => this.mouseRelease(event, true));
-
+            gl.canvas.addEventListener("mousedown", this.mousePress.bind(this));
+            gl.canvas.addEventListener("mousemove", this.mouseMotion.bind(this));
             window.requestAnimationFrame(this.draw.bind(this));
         });
     }
@@ -95,33 +83,17 @@ class PygletWindow {
 
     async onPointerLockChange(captured) {}
 
-    mousePress(event, isTouch=false) {
-        this.onMousePress(event.clientX, event.clientY, event.button, isTouch);
+    mousePress(event) {
+        this.onMousePress(event.clientX, event.clientY, event.button);
     }
 
-    async onMousePress(x, y, button, isTouch) {}
+    async onMousePress(x, y, button) {}
 
-    mouseMotion(event, isTouch=false) {
-        if (isTouch) {
-            const clientX = event.touches[0].clientX;
-            const clientY = event.touches[0].clientY;
-            const movementX = this.lastTouchLocation ? clientX - this.lastTouchLocation.x : 0;
-            const movementY = this.lastTouchLocation ? clientY - this.lastTouchLocation.y : 0;
-            this.onMouseMotion(clientX, clientY, movementX, movementY, true);
-            this.lastTouchLocation = {x: clientX, y: clientY};
-        } else {
-            this.onMouseMotion(event.clientX, event.clientY, event.movementX, event.movementY, false);
-        }
-
-        event.preventDefault();
+    mouseMotion(event) {
+        this.onMouseMotion(event.clientX, event.clientY, event.movementX, event.movementY);
     }
 
     async onMouseMotion(x, y, deltaX, deltaY) {}
-
-    mouseRelease(event, isTouch=false) {
-        this.onMouseRelease(event.clientX, event.clientY, event.button, isTouch);
-        this.lastTouchLocation = null;
-    }
 
     async init() {}
 

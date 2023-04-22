@@ -122,11 +122,7 @@ class Window extends pygletAdapter.window.Window {
         this.camera.height = height;
     }
 
-    async onMousePress(_, __, ___, isTouch) {
-        if (isTouch) {
-            this.mouseCaptured = true;
-            return;
-        }
+    async onMousePress() {
         this.mouseCaptured = !this.mouseCaptured;
         this.setExclusiveMouse(this.mouseCaptured);
     }
