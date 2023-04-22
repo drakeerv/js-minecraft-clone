@@ -37,8 +37,8 @@ class PygletWindow {
             window.addEventListener("keydown", this.keyPress.bind(this));
             window.addEventListener("keyup", this.keyRelease.bind(this));
             document.addEventListener("pointerlockchange", this.pointerLockChange.bind(this));
-            gl.canvas.addEventListener("mousedown", this.mousePress.bind(this));
-            gl.canvas.addEventListener("mousemove", this.mouseMotion.bind(this));
+            gl.canvas.addEventListener("pointerdown", this.mousePress.bind(this));
+            gl.canvas.addEventListener("pointermove", this.mouseMotion.bind(this));
             window.requestAnimationFrame(this.draw.bind(this));
         });
     }
@@ -91,6 +91,7 @@ class PygletWindow {
 
     mouseMotion(event) {
         this.onMouseMotion(event.clientX, event.clientY, event.movementX, event.movementY);
+        event.preventDefault();
     }
 
     async onMouseMotion(x, y, deltaX, deltaY) {}
