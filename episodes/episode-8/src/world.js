@@ -72,6 +72,8 @@ class World {
             return 0;
         }
 
+        // get the relative position of the block in the chunk
+
         const localX = pygletAdapter.math.mod(x, chunkWidth);
         const localY = pygletAdapter.math.mod(y, chunkHeight);
         const localZ = pygletAdapter.math.mod(z, chunkLength);

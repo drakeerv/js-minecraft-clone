@@ -12,7 +12,7 @@ class BlockType {
 
         this.vertexPositions = Numbers.vertexPositions;
         this.texCoords = Numbers.texCoords.slice();
-        this.shadingValues = Numbers.shadingValues; // set shading values
+        this.shadingValues = Numbers.shadingValues;
 
         const setBlockFace = (face, texture) => {
             this.texCoords[face] = this.texCoords[face].slice();

@@ -36,9 +36,9 @@ class Window extends pygletAdapter.window.Window {
 
         // bind textures
         
-        gl.activeTexture(gl.TEXTURE0); // set our active texture unit to the first texture unit
-        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.world.textureManager.textureArray); // bind our texture manager's texture
-        gl.uniform1i(this.shaderSamplerLocation, 0); // tell our sampler our texture is bound to the first texture unit
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.world.textureManager.textureArray);
+        gl.uniform1i(this.shaderSamplerLocation, 0);
 
         // set clear color
         
@@ -83,10 +83,10 @@ class Window extends pygletAdapter.window.Window {
         if (this.mouseCaptured) {
             const sensetivity = 0.004;
 
-            this.camera.rotation[0] -= deltaX * sensetivity; // this needs to be negative since turning to the left decreases delta_x while increasing the x rotation angle
+            this.camera.rotation[0] -= deltaX * sensetivity;
             this.camera.rotation[1] -= deltaY * sensetivity;
 
-            this.camera.rotation[1] = Math.max(-(Math.PI / 2), Math.min((Math.PI / 2), this.camera.rotation[1])) // clamp the camera's up / down rotation so that you can't snap your neck
+            this.camera.rotation[1] = Math.max(-(Math.PI / 2), Math.min((Math.PI / 2), this.camera.rotation[1]));
         }
     }
 

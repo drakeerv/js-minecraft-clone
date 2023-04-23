@@ -3,6 +3,7 @@
 import * as Cube from "./models/cube.js";
 
 class BlockType {
+    // new optional model argument (cube model by default)
     constructor(
         textureManager,
         name = "uknown",
@@ -11,14 +12,19 @@ class BlockType {
     ) {
         this.name = name;
 
+        // create members based on model attributes
+
         this.transparent = model.transparent;
         this.isCube = model.isCube;
 
+        // replace data contained in numbers.py with model specific data
+
         this.vertexPositions = model.vertexPositions;
         this.texCoords = model.texCoords.slice();
-        this.shadingValues = model.shadingValues; // set shading values
+        this.shadingValues = model.shadingValues;
 
         const setBlockFace = (face, texture) => {
+            // make sure we don't add inexistent faces
             if (face > this.texCoords.length - 1) return;
 
             this.texCoords[face] = this.texCoords[face].slice();

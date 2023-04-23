@@ -10,10 +10,8 @@ import * as Cactus from "./models/cactus.js";
 
 class World {
     constructor() {
-        // create list of block types
-
         this.textureManager = new TextureManager(16, 16, 256);
-        this.blockTypes = [null]; // "null" is the block type for air
+        this.blockTypes = [null];
 
         this.blockTypes.push(new BlockType(this.textureManager, "cobblestone", { "all": "cobblestone" }));
         this.blockTypes.push(new BlockType(this.textureManager, "grass", { "top": "grass", "bottom": "dirt", "sides": "grass_side" }));
@@ -31,8 +29,6 @@ class World {
         this.textureManager.loadTextures().then(() => {
             this.textureManager.generateMipmaps();
         });
-
-        // create chunks with very crude terrain generation
 
         this.chunks = {};
 
@@ -59,12 +55,13 @@ class World {
             }
         }
 
-        // update each chunk's mesh
-
         Object.values(this.chunks).forEach((chunk) => {
             chunk.updateMesh();
         });
     }
+
+    // could admittedly be named better, as it only returns the block number of opaque blocks
+	// this'll be refactored in a future episode
 
     getBlockNumber(position) {
         const x = position[0];
@@ -84,6 +81,11 @@ class World {
         const localX = pygletAdapter.math.mod(x, chunkWidth);
         const localY = pygletAdapter.math.mod(y, chunkHeight);
         const localZ = pygletAdapter.math.mod(z, chunkLength);
+
+        
+		// get block type and check if it's transparent or not
+		// if it is, return 0
+		// if it isn't, return the block number
 
         const blockNumber = this.chunks[chunkPosition].blocks[localX][localY][localZ];
         const blockType = this.blockTypes[blockNumber];

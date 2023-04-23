@@ -99,10 +99,10 @@ class Chunk {
         for (let localX = 0; localX < chunkWidth; localX++) {
             for (let localY = 0; localY < chunkHeight; localY++) {
                 for (let localZ = 0; localZ < chunkLength; localZ++) {
-                    const blockNumber = this.blocks[localX][localY][localZ] // get the block number of the block at that local position
+                    const blockNumber = this.blocks[localX][localY][localZ]; // get the block number of the block at that local position
 
                     if (blockNumber) { // check if the block is not air
-                        const blockType = this.world.blockTypes[blockNumber] // get the block type
+                        const blockType = this.world.blockTypes[blockNumber]; // get the block type
 
                         const x = this.position[0] + localX; // get the world-space position of the block
                         const y = this.position[1] + localY;
