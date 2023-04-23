@@ -5,6 +5,9 @@ import BlockType from "./blockType.js";
 import Chunk, { chunkWidth, chunkHeight, chunkLength } from "./chunk.js";
 import pygletAdapter from "../../adapter.js";
 
+import * as Plant from "./models/plant.js";
+import * as Cactus from "./models/cactus.js";
+
 class World {
     constructor() {
         // create list of block types
@@ -20,6 +23,10 @@ class World {
         this.blockTypes.push(new BlockType(this.textureManager, "sand", { "all": "sand" }));
         this.blockTypes.push(new BlockType(this.textureManager, "planks", { "all": "planks" }));
         this.blockTypes.push(new BlockType(this.textureManager, "log", { "top": "log_top", "bottom": "log_top", "sides": "log_side" }));
+        this.blockTypes.push(new BlockType(this.textureManager, "daisy", {"all": "daisy"}, Plant))
+		this.blockTypes.push(new BlockType(this.textureManager, "rose", {"all": "rose"}, Plant))
+		this.blockTypes.push(new BlockType(this.textureManager, "cactus", {"top": "cactus_top", "bottom": "cactus_bottom", "sides": "cactus_side"}, Cactus))
+		this.blockTypes.push(new BlockType(this.textureManager, "dead_bush", {"all": "dead_bush"}, Plant))
 
         this.textureManager.loadTextures().then(() => {
             this.textureManager.generateMipmaps();
@@ -37,10 +44,12 @@ class World {
                 for (let i = 0; i < chunkWidth; i++) {
                     for (let j = 0; j < chunkHeight; j++) {
                         for (let k = 0; k < chunkLength; k++) {
-                            if (j > 13) {
-                                currentChunk.blocks[i][j][k] = pygletAdapter.math.choice([0, 3]);
+                            if (j == 15) {
+                                currentChunk.blocks[i][j][k] = pygletAdapter.math.choice([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 12, 11]);
+                            } else if (j > 12) {
+                                currentChunk.blocks[i][j][k] = pygletAdapter.math.choice([0, 6]);
                             } else {
-                                currentChunk.blocks[i][j][k] = pygletAdapter.math.choice([0, 0, 1]);
+                                currentChunk.blocks[i][j][k] = pygletAdapter.math.choice([0, 0, 5]);
                             }
                         }
                     }
@@ -57,7 +66,7 @@ class World {
         });
     }
 
-    getBlockNumber(position) { // get the index in the block_types array of the block at a certain position
+    getBlockNumber(position) {
         const x = position[0];
         const y = position[1];
         const z = position[2];
@@ -68,7 +77,7 @@ class World {
             Math.floor(z / chunkLength)
         ];
 
-        if (!this.chunks[chunkPosition]) { // return "air" if the chunk doesn't exist
+        if (!this.chunks[chunkPosition]) {
             return 0;
         }
 
@@ -76,7 +85,11 @@ class World {
         const localY = pygletAdapter.math.mod(y, chunkHeight);
         const localZ = pygletAdapter.math.mod(z, chunkLength);
 
-        return this.chunks[chunkPosition].blocks[localX][localY][localZ]; // return the block number at the local position in the correct chunk
+        const blockNumber = this.chunks[chunkPosition].blocks[localX][localY][localZ];
+        const blockType = this.blockTypes[blockNumber];
+
+        if (!blockType || blockType.transparent) return 0;
+        return blockNumber;
     }
 
     draw() {

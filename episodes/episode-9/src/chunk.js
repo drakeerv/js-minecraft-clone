@@ -5,9 +5,9 @@ const gl = pygletAdapter.gl;
 
 // define constant values for the chunk's dimensions
 
-const chunkWidth = 16;
-const chunkHeight = 16;
-const chunkLength = 16;
+const chunkWidth = 16
+const chunkHeight = 16
+const chunkLength = 16
 
 class Chunk {
     constructor(world, chunkPosition) {
@@ -18,7 +18,7 @@ class Chunk {
             this.chunkPosition[1] * chunkHeight,
             this.chunkPosition[2] * chunkLength];
 
-        this.world = world;
+        this.world = world
 
         this.blocks = Array.from({ length: chunkWidth }, () => Array.from({ length: chunkHeight }, () => Array.from({ length: chunkLength }, () => 0))); // create an array of blocks filled with "air" (block number 0)
 
@@ -111,12 +111,18 @@ class Chunk {
 
                         // check for each block face if it's hidden by another block, and add that face to the chunk mesh if not
 
-                        if (!this.world.getBlockNumber([x + 1, y, z])) addFace(blockType, position, 0);
-                        if (!this.world.getBlockNumber([x - 1, y, z])) addFace(blockType, position, 1);
-                        if (!this.world.getBlockNumber([x, y + 1, z])) addFace(blockType, position, 2);
-                        if (!this.world.getBlockNumber([x, y - 1, z])) addFace(blockType, position, 3);
-                        if (!this.world.getBlockNumber([x, y, z + 1])) addFace(blockType, position, 4);
-                        if (!this.world.getBlockNumber([x, y, z - 1])) addFace(blockType, position, 5);
+                        if (blockType.isCube) {
+                            if (!this.world.getBlockNumber([x + 1, y, z])) addFace(blockType, position, 0);
+                            if (!this.world.getBlockNumber([x - 1, y, z])) addFace(blockType, position, 1);
+                            if (!this.world.getBlockNumber([x, y + 1, z])) addFace(blockType, position, 2);
+                            if (!this.world.getBlockNumber([x, y - 1, z])) addFace(blockType, position, 3);
+                            if (!this.world.getBlockNumber([x, y, z + 1])) addFace(blockType, position, 4);
+                            if (!this.world.getBlockNumber([x, y, z - 1])) addFace(blockType, position, 5);
+                        } else {
+                            for (let i = 0; i < blockType.vertexPositions.length; i++) {
+                                addFace(blockType, position, i);
+                            }
+                        }
                     }
                 }
             }

@@ -184,6 +184,10 @@ class pygletMath {
 
         return remainder;
     }
+
+    choice(array) {
+        return array[Math.floor(Math.random() * array.length)];
+    }
 }
 
 class PygletAdapter {
