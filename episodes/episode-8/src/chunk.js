@@ -1,3 +1,5 @@
+"use strict";
+
 import pygletAdapter from "../../adapter.js";
 const gl = pygletAdapter.gl;
 
@@ -8,181 +10,180 @@ const chunkHeight = 16
 const chunkLength = 16
 
 class Chunk {
-	constructor(world, chunk_position) {
-		this.chunk_position = chunk_position;
-		
-		this.position = [ // get a world-space position for the chunk
-			this.chunk_position[0] * chunkWidth,
-			this.chunk_position[1] * chunkHeight,
-			this.chunk_position[2] * chunkLength];
-		
-		 this.world = world
+    constructor(world, chunkPosition) {
+        this.chunkPosition = chunkPosition;
 
-        this.blocks = Array.from({ length: chunkWidth }, () => Array.from({ length: chunkHeight }, () => Array.from({ length: const chunkLength = 16 }, () => 0))); // create an array of blocks filled with "air" (block number 0)
+        this.position = [ // get a world-space position for the chunk
+            this.chunkPosition[0] * chunkWidth,
+            this.chunkPosition[1] * chunkHeight,
+            this.chunkPosition[2] * chunkLength];
 
-		// mesh variables
+        this.world = world
 
-		this.hasMesh = false;
+        this.blocks = Array.from({ length: chunkWidth }, () => Array.from({ length: chunkHeight }, () => Array.from({ length: chunkLength }, () => 0))); // create an array of blocks filled with "air" (block number 0)
 
-		this.meshVertexPositions = [];
-		this.meshTexCoords = [];
-		this.meshShadingValues = [];
+        // mesh variables
 
-		this.meshIndexCounter = 0;
-		this.meshIndices = [];
+        this.hasMesh = false;
 
-		// create vertex array object
+        this.meshVertexPositions = [];
+        this.meshTexCoords = [];
+        this.meshShadingValues = [];
 
-		this.vao = gl.createVertexArray();
+        this.meshIndexCounter = 0;
+        this.meshIndices = [];
+
+        // create vertex array object
+
+        this.vao = gl.createVertexArray();
         gl.bindVertexArray(this.vao);
 
-		// create vertex position vbo
+        // create vertex position vbo
 
-		this.vertexPositionVbo = gl.createBuffer();
+        this.vertexPositionVbo = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexPositionVbo);
-		
-		// create tex coord vbo
+
+        // create tex coord vbo
 
         this.texCoordVbo = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordVbo);
 
-		// create shading values vbo
+        // create shading values vbo
 
-        this.shadingValueVbo = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.shadingValueVbo);
+        this.shadingValuesVbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.shadingValuesVbo);
 
-		// create index buffer object
+        // create index buffer object
 
         this.ibo = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
     }
-	
-	updateMesh() {
-		// reset all the mesh-related values
 
-		this.hasMesh = false;
+    updateMesh() {
+        // reset all the mesh-related values
 
-		this.meshVertexPositions = [];
-		this.meshTexCoords = [];
-		this.meshShadingValues = [];
+        this.hasMesh = true;
 
-		this.meshIndexCounter = 0;
-		this.meshIndices = [];
+        this.meshVertexPositions = [];
+        this.meshTexCoords = [];
+        this.meshShadingValues = [];
 
-		const addFace = (blockType, position, face) => { // add a face to the chunk mesh
-			let vertexPositions = blockType.vertexPositions[face].slice() // get the vertex positions of the face to be added
+        this.meshIndexCounter = 0;
+        this.meshIndices = [];
 
-			for (let i; i < 4; i++) { // add the world-space position of the face to it's vertex positions
-				vertexPositions[i * 3 + 0] += position[0];
-				vertexPositions[i * 3 + 1] += position[1];
-			    vertexPositions[i * 3 + 2] += position[2];
+        const addFace = (blockType, position, face) => { // add a face to the chunk mesh
+            let vertexPositions = blockType.vertexPositions[face].slice(); // get the vertex positions of the face to be added
+
+            for (let i = 0; i < 4; i++) { // add the world-space position of the face to it's vertex positions
+                vertexPositions[i * 3 + 0] += position[0];
+                vertexPositions[i * 3 + 1] += position[1];
+                vertexPositions[i * 3 + 2] += position[2];
             }
-			
-			 this.meshVertexPositions.push(...vertexPositions); // add those vertex positions to the chunk mesh's vertex positions
 
-			let indices = [0, 1, 2, 0, 2, 3]; // create a list of indices for the face's vertices
-			for (let i; i < 6; i++) { // shift each index by the chunk mesh's index counter so that no two faces share the same indices
-				indices[i] +=  this.meshIndexCounter;
+            this.meshVertexPositions.push(...vertexPositions); // add those vertex positions to the chunk mesh's vertex positions
+
+            let indices = [0, 1, 2, 0, 2, 3]; // create a list of indices for the face's vertices
+            for (let i = 0; i < 6; i++) { // shift each index by the chunk mesh's index counter so that no two faces share the same indices
+                indices[i] += this.meshIndexCounter;
             }
-			
-			 this.meshIndices.push(...indices); // add those indices to the chunk mesh's indices
-			 this.meshIndexCounter += 4; // add 4 (the amount of vertices in a face) to the chunk mesh's index counter
 
-			 this.meshTexCoords.push(...blockType.texCoords[face]); // add the face's texture coordinates to the chunk mesh's texture coordinates
-			 this.meshShadingValues.extend(...blockType.shadingValues[face]); // add the face's shading values to the chunk mesh's shading values
+            this.meshIndices.push(...indices); // add those indices to the chunk mesh's indices
+            this.meshIndexCounter += 4; // add 4 (the amount of vertices in a face) to the chunk mesh's index counter
+
+            this.meshTexCoords.push(...blockType.texCoords[face]); // add the face's texture coordinates to the chunk mesh's texture coordinates
+            this.meshShadingValues.push(...blockType.shadingValues[face]); // add the face's shading values to the chunk mesh's shading values
         }
+
+        // iterate through all local block positions in the chunk
+
+        for (let localX = 0; localX < chunkWidth; localX++) {
+            for (let localY = 0; localY < chunkHeight; localY++) {
+                for (let localZ = 0; localZ < chunkLength; localZ++) {
+                    const blockNumber = this.blocks[localX][localY][localZ] // get the block number of the block at that local position
+
+                    if (blockNumber) { // check if the block is not air
+                        const blockType = this.world.blockTypes[blockNumber] // get the block type
+
+                        const x = this.position[0] + localX; // get the world-space position of the block
+                        const y = this.position[1] + localY;
+                        const z = this.position[2] + localZ;
+                        const position = [x, y, z];
+
+                        // check for each block face if it's hidden by another block, and add that face to the chunk mesh if not
+
+                        if (!this.world.getBlockNumber([x + 1, y, z])) addFace(blockType, position, 0);
+                        if (!this.world.getBlockNumber([x - 1, y, z])) addFace(blockType, position, 1);
+                        if (!this.world.getBlockNumber([x, y + 1, z])) addFace(blockType, position, 2);
+                        if (!this.world.getBlockNumber([x, y - 1, z])) addFace(blockType, position, 3);
+                        if (!this.world.getBlockNumber([x, y, z + 1])) addFace(blockType, position, 4);
+                        if (!this.world.getBlockNumber([x, y, z - 1])) addFace(blockType, position, 5);
+                    }
+                }
+            }
+        }
+
+
+        // pass mesh data to gpu
+
+        if (!this.meshIndexCounter) return; // make sure there actually is data in the mesh
+
+        gl.bindVertexArray(this.vao); // bind the VAO
+
+        // pass the mesh data to the vertex position VBO
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexPositionVbo);
+        gl.bufferData(
+            gl.ARRAY_BUFFER,
+            Float32Array.from(this.meshVertexPositions),
+            gl.STATIC_DRAW);
         
-		// iterate through all local block positions in the chunk
 
-        for (let localX; localX < chunkWidth; localX++) {
-			for local_y in range(CHUNK_HEIGHT):
-            for (let localY; localY < chunkHeight; localY++) {
-				for local_z in range(CHUNK_LENGTH):
-					block_number =  this.blocks[local_x][local_y][local_z] // get the block number of the block at that local position
+        gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(0);
 
-					if block_number: // check if the block is not air
-						block_type =  this.world.block_types[block_number] // get the block type
+        // pass the mesh data to the texture coordinates VBO
 
-						x, y, z = ( // get the world-space position of the block
-							 this.position[0] + local_x,
-							 this.position[1] + local_y,
-							 this.position[2] + local_z)
-						
-						// check for each block face if it's hidden by another block, and add that face to the chunk mesh if not
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordVbo);
+        gl.bufferData(
+            gl.ARRAY_BUFFER,
+            Float32Array.from(this.meshTexCoords),
+            gl.STATIC_DRAW);
 
-						if not  this.world.get_block_number((x + 1, y, z)): add_face(0)
-						if not  this.world.get_block_number((x - 1, y, z)): add_face(1)
-						if not  this.world.get_block_number((x, y + 1, z)): add_face(2)
-						if not  this.world.get_block_number((x, y - 1, z)): add_face(3)
-						if not  this.world.get_block_number((x, y, z + 1)): add_face(4)
-						if not  this.world.get_block_number((x, y, z - 1)): add_face(5)
-		
-		// pass mesh data to gpu
+        gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(1);
 
-		if not  this.mesh_index_counter: // make sure there actually is data in the mesh
-			return
+        // pass the mesh data to the shading values VBO
 
-		gl.glBindVertexArray( this.vao) // bind the VAO
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.shadingValuesVbo);
+        gl.bufferData(
+            gl.ARRAY_BUFFER,
+            Float32Array.from(this.meshShadingValues),
+            gl.STATIC_DRAW);
 
-		// pass the mesh data to the vertex position VBO
+        gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(2);
 
-		gl.glBindBuffer(gl.GL_ARRAY_BUFFER,  this.vertex_position_vbo)
-		gl.glBufferData(
-			gl.GL_ARRAY_BUFFER,
-			ctypes.sizeof(gl.GLfloat * len( this.mesh_vertex_positions)),
-			(gl.GLfloat * len( this.mesh_vertex_positions)) (* this.mesh_vertex_positions),
-			gl.GL_STATIC_DRAW)
-		
-		gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, gl.GL_FALSE, 0, 0)
-		gl.glEnableVertexAttribArray(0)
-		
-		// pass the mesh data to the texture coordinates VBO
+        // pass the mesh data to the IBO
 
-		gl.glBindBuffer(gl.GL_ARRAY_BUFFER,  this.tex_coord_vbo)
-		gl.glBufferData(
-			gl.GL_ARRAY_BUFFER,
-			ctypes.sizeof(gl.GLfloat * len( this.mesh_tex_coords)),
-			(gl.GLfloat * len( this.mesh_tex_coords)) (* this.mesh_tex_coords),
-			gl.GL_STATIC_DRAW)
-		
-		gl.glVertexAttribPointer(1, 3, gl.GL_FLOAT, gl.GL_FALSE, 0, 0)
-		gl.glEnableVertexAttribArray(1)
-
-		// pass the mesh data to the shading values VBO
-		
-		gl.glBindBuffer(gl.GL_ARRAY_BUFFER,  this.shading_values_vbo)
-		gl.glBufferData(
-			gl.GL_ARRAY_BUFFER,
-			ctypes.sizeof(gl.GLfloat * len( this.mesh_shading_values)),
-			(gl.GLfloat * len( this.mesh_shading_values)) (* this.mesh_shading_values),
-			gl.GL_STATIC_DRAW)
-
-		gl.glVertexAttribPointer(2, 1, gl.GL_FLOAT, gl.GL_FALSE, 0, 0)
-		gl.glEnableVertexAttribArray(2)
-		
-		// pass the mesh data to the IBO
-
-		gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER,  this.ibo)
-		gl.glBufferData(
-			gl.GL_ELEMENT_ARRAY_BUFFER,
-			ctypes.sizeof(gl.GLuint * len( this.mesh_indices)),
-			(gl.GLuint * len( this.mesh_indices)) (* this.mesh_indices),
-			gl.GL_STATIC_DRAW)
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
+        gl.bufferData(
+            gl.ELEMENT_ARRAY_BUFFER,
+            Uint32Array.from(this.meshIndices),
+            gl.STATIC_DRAW);
     }
-	
-	def draw(self):
-		if not  this.mesh_index_counter: // make sure there actually is data in the mesh
-			return
-		
-		// draw the VAO
 
-		gl.glBindVertexArray( this.vao)
+    draw() {
+        if (!this.meshIndexCounter) return; // make sure there actually is data in the mesh
 
-		gl.glDrawElements(
-			gl.GL_TRIANGLES,
-			len( this.mesh_indices),
-			gl.GL_UNSIGNED_INT,
-			None)
+        gl.bindVertexArray(this.vao); // bind the VAO
+
+        gl.drawElements(
+            gl.TRIANGLES,
+            this.meshIndices.length,
+            gl.UNSIGNED_INT,
+            0);
+    }
 }
 
 export default Chunk;
+export { chunkWidth, chunkHeight, chunkLength };

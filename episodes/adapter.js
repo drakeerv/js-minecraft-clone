@@ -170,11 +170,28 @@ class pygletImage {
     }
 }
 
+class pygletMath {
+    constructor() {}
+
+    mod(dividend, divisor) {
+        const remainder = dividend % divisor;
+
+        if (divisor < 0 && remainder > 0) {
+            return remainder - divisor;
+        } else if (divisor > 0 && remainder < 0) {
+            return remainder + divisor;
+        }
+
+        return remainder;
+    }
+}
+
 class PygletAdapter {
     constructor() {
         this.window = {Window: PygletWindow}
         this.clock = new PygletClock();
         this.image = new pygletImage();
+        this.math = new pygletMath();
         this.gl = window.glInstance;
     }
 }

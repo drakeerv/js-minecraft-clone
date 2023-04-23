@@ -5,27 +5,13 @@ const gl = pygletAdapter.gl;
 
 import Shader from "./shader.js";
 import Camera from "./camera.js";
-
-import BlockType from "./blockType.js";
-import TextureManager from "./textureManager.js";
+import World from "./world.js";
 
 class Window extends pygletAdapter.window.Window {
     async init() {
-        // create blocks
+        // create world
 
-        this.textureManager = new TextureManager(16, 16, 256); // create our texture manager (256 textures that are 16 x 16 pixels each)
-
-        this.cobblestone = new BlockType(this.textureManager, "cobblestone", { "all": "cobblestone" }); // create each one of our blocks with the texture manager and a list of textures per face
-        this.grass = new BlockType(this.textureManager, "grass", { "top": "grass", "bottom": "dirt", "sides": "grass_side" });
-        this.dirt = new BlockType(this.textureManager, "dirt", { "all": "dirt" });
-        this.stone = new BlockType(this.textureManager, "stone", { "all": "stone" });
-        this.sand = new BlockType(this.textureManager, "sand", { "all": "sand" });
-        this.planks = new BlockType(this.textureManager, "planks", { "all": "planks" });
-        this.log = new BlockType(this.textureManager, "log", { "top": "log_top", "bottom": "log_top", "sides": "log_side" });
-
-        // load all at once
-        await this.textureManager.loadTextures();
-        this.textureManager.generateMipmaps();
+        this.world = new World();
 
         // create shader
 
@@ -46,11 +32,12 @@ class Window extends pygletAdapter.window.Window {
         // enable gl stuff
 
         gl.enable(gl.DEPTH_TEST);
+        gl.enable(gl.CULL_FACE);
 
         // bind textures
         
         gl.activeTexture(gl.TEXTURE0); // set our active texture unit to the first texture unit
-        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.textureManager.textureArray); // bind our texture manager's texture
+        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.world.textureManager.textureArray); // bind our texture manager's texture
         gl.uniform1i(this.shaderSamplerLocation, 0); // tell our sampler our texture is bound to the first texture unit
 
         // set clear color
@@ -72,12 +59,9 @@ class Window extends pygletAdapter.window.Window {
         // draw stuff
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        this.world.draw();
 
-        gl.drawElements(
-            gl.TRIANGLES,
-            this.grass.indices.length,
-            gl.UNSIGNED_INT,
-            0);
+        gl.finish();
     }
 
     // input functions
