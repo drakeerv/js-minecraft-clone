@@ -132,7 +132,7 @@ class Window extends pygletAdapter.window.Window {
             const sensetivity = 0.004;
 
             this.camera.rotation[0] -= deltaX * sensetivity; // this needs to be negative since turning to the left decreases delta_x while increasing the x rotation angle
-            this.camera.rotation[1] -= deltaY * sensetivity;
+            this.camera.rotation[1] += deltaY * sensetivity;
 
             this.camera.rotation[1] = Math.max(-(Math.PI / 2), Math.min((Math.PI / 2), this.camera.rotation[1])) // clamp the camera's up / down rotation so that you can't snap your neck
         }
