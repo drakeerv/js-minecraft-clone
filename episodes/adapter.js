@@ -90,7 +90,7 @@ class PygletWindow {
     async onMousePress(x, y, button) {}
 
     mouseMotion(event) {
-        this.onMouseMotion(event.clientX, event.clientY, event.movementX, event.movementY);
+        this.onMouseMotion(event.clientX, event.clientY, event.movementX, -event.movementY);
     }
 
     async onMouseMotion(x, y, deltaX, deltaY) {}
@@ -187,6 +187,52 @@ class pygletMath {
 
     choice(array) {
         return array[Math.floor(Math.random() * array.length)];
+    }
+
+    cumsum(array) {
+        const result = [];
+        let sum = 0;
+
+        for (let i = 0; i < array.length; i++) {
+            sum += array[i];
+            result.push(sum);
+        }
+
+        return result;
+    }
+
+    bisect(array, value) {
+        let low = 0;
+        let high = array.length;
+
+        while (low < high) {
+            const mid = Math.floor((low + high) / 2);
+
+            if (array[mid] < value) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+
+        return low;
+    }
+
+    choices(array, weights, cumWeights=null, k=1) {
+        if (cumWeights === null) {
+            cumWeights = this.cumsum(weights);
+        }
+
+        const total = cumWeights[cumWeights.length - 1];
+        const result = [];
+
+        for (let i = 0; i < k; i++) {
+            const random = Math.random() * total;
+            const index = this.bisect(cumWeights, random);
+            result.push(array[index]);
+        }
+
+        return result;
     }
 }
 

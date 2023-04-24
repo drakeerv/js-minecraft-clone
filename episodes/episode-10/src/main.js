@@ -83,7 +83,7 @@ class Window extends pygletAdapter.window.Window {
         if (this.mouseCaptured) {
             const sensetivity = 0.004;
 
-            this.camera.rotation[0] -= deltaX * sensetivity;
+            this.camera.rotation[0] += deltaX * sensetivity;
             this.camera.rotation[1] += deltaY * sensetivity;
 
             this.camera.rotation[1] = Math.max(-(Math.PI / 2), Math.min((Math.PI / 2), this.camera.rotation[1]));

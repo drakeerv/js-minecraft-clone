@@ -74,7 +74,7 @@ class Window extends pygletAdapter.window.Window {
         this.camera.height = height;
     }
 
-    async onMousePress() {
+    async onMousePress(x, y, button, modifiers) {
         this.mouseCaptured = !this.mouseCaptured;
         this.setExclusiveMouse(this.mouseCaptured);
     }
@@ -84,7 +84,7 @@ class Window extends pygletAdapter.window.Window {
             const sensetivity = 0.004;
 
             this.camera.rotation[0] -= deltaX * sensetivity;
-            this.camera.rotation[1] -= deltaY * sensetivity;
+            this.camera.rotation[1] += deltaY * sensetivity;
 
             this.camera.rotation[1] = Math.max(-(Math.PI / 2), Math.min((Math.PI / 2), this.camera.rotation[1]));
         }
