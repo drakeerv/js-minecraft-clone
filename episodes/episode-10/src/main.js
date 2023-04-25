@@ -53,7 +53,7 @@ class Window extends pygletAdapter.window.Window {
             this.camera.input = [0, 0, 0];
         }
 
-		this.camera.updateCamera(deltaTime);
+        this.camera.updateCamera(deltaTime);
     }
 
     async onDraw() {
