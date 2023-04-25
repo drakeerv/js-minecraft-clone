@@ -1,7 +1,5 @@
 #version 300 es
 
-precision highp float;
-
 layout(location = 0) in vec3 vertex_position;
 layout(location = 1) in vec3 tex_coords;
 layout(location = 2) in float shading_value; // shading value attribute

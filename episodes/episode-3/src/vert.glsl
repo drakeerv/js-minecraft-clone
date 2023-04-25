@@ -1,7 +1,5 @@
 #version 300 es // specify we are indeed using webgl2
 
-precision mediump float;
-
 layout(location = 0) in vec3 vertex_position; // vertex position attribute
 
 out vec3 local_position; // interpolated vertex position

@@ -1,6 +1,6 @@
 #version 300 es
 
-precision mediump float;
+precision lowp float;
 precision lowp sampler2DArray;
 
 out vec4 fragment_colour;
