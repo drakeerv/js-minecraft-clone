@@ -1,6 +1,6 @@
 #version 300 es // specify we are indeed using webgl2
 
-precision mediump float;
+precision lowp float;
 
 out vec4 fragment_colour; // output of our shader
 
