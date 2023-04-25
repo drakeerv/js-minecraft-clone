@@ -86,22 +86,22 @@ class Chunk {
             }
         }
 
-        if (lx === 0) {
-            tryUpdateSubchunkMesh([sx - 1, sy, sz]);
-        } else if (lx === chunkWidth - 1) {
+        if (lx == subchunkWidth - 1) {
             tryUpdateSubchunkMesh([sx + 1, sy, sz]);
+        } else if (lx == 0) {
+            tryUpdateSubchunkMesh([sx - 1, sy, sz]);
         }
 
-        if (ly === 0) {
-            tryUpdateSubchunkMesh([sx, sy - 1, sz]);
-        } else if (ly === chunkHeight - 1) {
+        if (ly == subchunkHeight - 1) {
             tryUpdateSubchunkMesh([sx, sy + 1, sz]);
+        } else if (ly == 0) {
+            tryUpdateSubchunkMesh([sx, sy - 1, sz]);
         }
 
-        if (lz === 0) {
-            tryUpdateSubchunkMesh([sx, sy, sz - 1]);
-        } else if (lz === chunkLength - 1) {
+        if (lz == subchunkLength - 1) {
             tryUpdateSubchunkMesh([sx, sy, sz + 1]);
+        } else if (lz == 0) {
+            tryUpdateSubchunkMesh([sx, sy, sz - 1]);
         }
     }
 
