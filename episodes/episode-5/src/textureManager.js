@@ -56,6 +56,8 @@ class TextureManager {
 
     async loadTextures() {
         await Promise.all(this.textures.map(this.loadTexture.bind(this)));
+        
+        gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.textureArray);
     }
 }

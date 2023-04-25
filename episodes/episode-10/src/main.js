@@ -6,6 +6,7 @@ const gl = pygletAdapter.gl;
 import Shader from "./shader.js";
 import Camera from "./camera.js";
 import World from "./world.js";
+import Hit, {hitRange} from "./hit.js";
 
 class Window extends pygletAdapter.window.Window {
     async init() {
@@ -34,15 +35,17 @@ class Window extends pygletAdapter.window.Window {
         gl.enable(gl.DEPTH_TEST);
         gl.enable(gl.CULL_FACE);
 
-        // bind textures
-        
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.world.textureManager.textureArray);
+        // texture stuff
+
         gl.uniform1i(this.shaderSamplerLocation, 0);
 
         // set clear color
         
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+        // misc stuff
+
+        this.holding = 7;
     }
 
     async update(deltaTime) {
@@ -75,8 +78,32 @@ class Window extends pygletAdapter.window.Window {
     }
 
     async onMousePress(x, y, button, modifiers) {
-        this.mouseCaptured = !this.mouseCaptured;
-        this.setExclusiveMouse(this.mouseCaptured);
+        if (!this.mouseCaptured) {
+            this.mouseCaptured = true;
+            this.setExclusiveMouse(true);
+            return;
+        }
+
+        // handle breaking/placing blocks
+
+        const hitCallback = (currentBlock, nextBlock) => {
+            if (button == 2) {
+                this.world.setBlock(currentBlock, this.holding);
+            } else if (button == 0) {
+                this.world.setBlock(nextBlock, 0);
+            } else if (button == 1) {
+                this.holding = this.world.getBlockNumber(nextBlock);
+            }
+        }
+
+        const hitRay = new Hit(this.world, this.camera.rotation, this.camera.position);
+
+        // debugger;
+        while (hitRay.distance < hitRange) {
+            if (hitRay.step(hitCallback)) {
+                break;
+            }
+        }
     }
 
     async onMouseMotion(x, y, deltaX, deltaY) {
@@ -107,6 +134,9 @@ class Window extends pygletAdapter.window.Window {
             this.camera.input[1] += 1;
         } else if ((key == "ShiftLeft" || key == "KeyC") && this.camera.input[1] >= 0) {
             this.camera.input[1] -= 1;
+        } else if (key == "Escape") {
+            this.mouseCaptured = false;
+            pygletAdapter.window.set_exclusive_mouse(false);
         }
     }
 

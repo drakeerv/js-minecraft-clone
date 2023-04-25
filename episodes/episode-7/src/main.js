@@ -89,12 +89,10 @@ class Window extends pygletAdapter.window.Window {
 
         gl.enable(gl.DEPTH_TEST);
 
-        // bind textures
+        // texture stuff
         
-        gl.activeTexture(gl.TEXTURE0); // set our active texture unit to the first texture unit
-        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.textureManager.textureArray); // bind our texture manager's texture
-        gl.uniform1i(this.shaderSamplerLocation, 0); // tell our sampler our texture is bound to the first texture unit
-
+        gl.uniform1i(this.shaderSamplerLocation, 0);
+        
         // set clear color
         
         gl.clearColor(0.0, 0.0, 0.0, 1.0);

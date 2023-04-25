@@ -34,10 +34,8 @@ class Window extends pygletAdapter.window.Window {
         gl.enable(gl.DEPTH_TEST);
         gl.enable(gl.CULL_FACE);
 
-        // bind textures
+        // texture stuff
         
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.world.textureManager.textureArray);
         gl.uniform1i(this.shaderSamplerLocation, 0);
 
         // set clear color

@@ -22,9 +22,9 @@ class World {
         this.blockTypes.push(new BlockType(this.textureManager, "planks", { "all": "planks" }));
         this.blockTypes.push(new BlockType(this.textureManager, "log", { "top": "log_top", "bottom": "log_top", "sides": "log_side" }));
         this.blockTypes.push(new BlockType(this.textureManager, "daisy", {"all": "daisy"}, Plant))
-    this.blockTypes.push(new BlockType(this.textureManager, "rose", {"all": "rose"}, Plant))
-    this.blockTypes.push(new BlockType(this.textureManager, "cactus", {"top": "cactus_top", "bottom": "cactus_bottom", "sides": "cactus_side"}, Cactus))
-    this.blockTypes.push(new BlockType(this.textureManager, "dead_bush", {"all": "dead_bush"}, Plant))
+        this.blockTypes.push(new BlockType(this.textureManager, "rose", {"all": "rose"}, Plant))
+        this.blockTypes.push(new BlockType(this.textureManager, "cactus", {"top": "cactus_top", "bottom": "cactus_bottom", "sides": "cactus_side"}, Cactus))
+        this.blockTypes.push(new BlockType(this.textureManager, "dead_bush", {"all": "dead_bush"}, Plant))
 
         this.textureManager.loadTextures().then(() => {
             this.textureManager.generateMipmaps();
@@ -32,8 +32,8 @@ class World {
 
         this.chunks = {};
 
-        for (let x = -4; x < 4; x++) {
-            for (let z = -4; z < 4; z++) {
+        for (let x = -1; x < 1; x++) {
+            for (let z = -1; z < 1; z++) {
                 const chunkPosition = [x, -1, z];
                 const currentChunk = new Chunk(this, chunkPosition);
 
@@ -99,8 +99,7 @@ class World {
         let lx, ly, lz;
         [lx, ly, lz] = this.getLocalPosition(position);
 
-
-        const blockNumber = this.chunks[chunkPosition].blocks[localX][localY][localZ];
+        const blockNumber = this.chunks[chunkPosition].blocks[lx][ly][lz];
         return blockNumber;
     }
 
@@ -122,7 +121,8 @@ class World {
         [x, y, z] = position;
         const chunkPosition = this.getChunkPosition(position);
 
-        if (!this.chunks.includes(chunkPosition)) { // if no chunks exist at this position, create a new one
+
+        if (!(chunkPosition in this.chunks)) { // if no chunks exist at this position, create a new one
             if (number == 0) {
                 return; // no point in creating a whole new chunk if we're not gonna be adding anything
             }
@@ -137,17 +137,17 @@ class World {
         let lx, ly, lz;
         [lx, ly, lz] = this.getLocalPosition(position);
 
-        this.chunks[chunkPosition].blocks[lx][ly][lz] = number;
-        this.chunks[chunkPosition].updateAtPosition(position);
-        this.chunks[chunkPosition].updateMesh();
+        this.chunks[chunkPosition.join(",")].blocks[lx][ly][lz] = number;
+        this.chunks[chunkPosition.join(",")].updateAtPosition(position);
+        this.chunks[chunkPosition.join(",")].updateMesh();
 
         let cx, cy, cz;
         [cx, cy, cz] = chunkPosition;
 
         const tryUpdateChunkAtPosition = (chunkPosition, position) => {
-            if (!this.chunks.includes(chunkPosition)) {
-                this.chunks[chunkPosition].updateAtPosition(position);
-                this.chunks[chunkPosition].updateMesh();
+            if (chunkPosition in this.chunks) {
+                this.chunks[chunkPosition.join(",")].updateAtPosition(position);
+                this.chunks[chunkPosition.join(",")].updateMesh();
             }
         }
 
