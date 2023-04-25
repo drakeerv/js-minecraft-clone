@@ -67,9 +67,9 @@ class Chunk {
         let x, y, z;
         [x, y, z] = position;
 
-        const lx = pygletAdapter.math.mod(x, chunkWidth);
-        const ly = pygletAdapter.math.mod(y, chunkHeight);
-        const lz = pygletAdapter.math.mod(z, chunkLength);
+        const lx = pygletAdapter.math.mod(x, subchunkWidth);
+        const ly = pygletAdapter.math.mod(y, subchunkHeight);
+        const lz = pygletAdapter.math.mod(z, subchunkLength);
 
         let clx, cly, clz;
         [clx, cly, clz] = this.world.getLocalPosition(position);

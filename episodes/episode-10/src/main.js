@@ -136,7 +136,7 @@ class Window extends pygletAdapter.window.Window {
             this.camera.input[1] -= 1;
         } else if (key == "Escape") {
             this.mouseCaptured = false;
-            pygletAdapter.window.set_exclusive_mouse(false);
+            this.setExclusiveMouse(false);
         }
     }
 
