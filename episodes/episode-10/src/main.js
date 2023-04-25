@@ -96,14 +96,17 @@ class Window extends pygletAdapter.window.Window {
             }
         }
 
-        const hitRay = new Hit(this.world, this.camera.rotation, this.camera.position);
+        const initHit = async _ => {
+            const hitRay = new Hit(this.world, this.camera.rotation, this.camera.position);
 
-        // debugger;
-        while (hitRay.distance < hitRange) {
-            if (hitRay.step(hitCallback)) {
-                break;
+            while (hitRay.distance < hitRange) {
+                if (hitRay.step(hitCallback)) {
+                    break;
+                }
             }
         }
+
+        initHit();
     }
 
     async onMouseMotion(x, y, deltaX, deltaY) {
