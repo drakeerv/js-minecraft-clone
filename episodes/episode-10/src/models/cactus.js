@@ -1,3 +1,5 @@
+"use strict";
+
 const transparent = true;
 const isCube = false;
 

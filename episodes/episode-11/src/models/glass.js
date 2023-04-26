@@ -1,6 +1,6 @@
-const transparent = false
+const transparent = true
 const isCube = true
-const glass = false
+const glass = true
 
 const vertexPositions = [
     [ 0.5,  0.5,  0.5,  0.5, -0.5,  0.5,  0.5, -0.5, -0.5,  0.5,  0.5, -0.5], // right

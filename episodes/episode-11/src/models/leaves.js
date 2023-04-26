@@ -1,4 +1,4 @@
-const transparent = false
+const transparent = true
 const isCube = true
 const glass = false
 

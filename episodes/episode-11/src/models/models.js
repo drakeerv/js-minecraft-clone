@@ -1,5 +1,23 @@
 "use strict";
 
-export * as Cube from "./cube.js";
+export * as Button from "./button.js";
 export * as Cactus from "./cactus.js";
+export * as Crop from "./crop.js";
+export * as Cube from "./cube.js";
+export * as Door from "./door.js";
+export * as Fire from "./fire.js";
+export * as Flat from "./flat.js";
+export * as Glass from "./glass.js";
+export * as Ladder from "./ladder.js";
+export * as Leaves from "./leaves.js";
+export * as Lever from "./lever.js";
+export * as Liquid from "./liquid.js";
 export * as Plant from "./plant.js";
+export * as PressurePlate from "./pressurePlate.js";
+export * as Sign from "./sign.js";
+export * as SignPost from "./signPost.js";
+export * as Slab from "./slab.js";
+export * as Snow from "./snow.js";
+export * as Soil from "./soil.js";
+export * as Stairs from "./stairs.js";
+export * as Torch from "./torch.js";
