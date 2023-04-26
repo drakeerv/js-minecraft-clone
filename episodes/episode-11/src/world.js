@@ -7,6 +7,8 @@ import pygletAdapter from "../../adapter.js";
 
 import * as Models from "./models/models.js";
 
+import Save from "./save.js";
+
 class World {
     constructor() {
         this.textureManager = new TextureManager(16, 16, 256);
