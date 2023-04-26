@@ -4,7 +4,7 @@
 // this would avoid the problems this solution has
 
 const transparent = true;
-const isCube = false;
+const isCube = true;
 const glass = true;
 
 const vertexPositions = [

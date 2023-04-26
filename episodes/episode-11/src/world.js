@@ -89,13 +89,13 @@ class World {
                     for (let j = 0; j < chunkHeight; j++) {
                         for (let k = 0; k < chunkLength; k++) {
                             if (j == 15) {
-                                currentChunk.blocks[i][j][k] = pygletAdapter.math.choices([0, 9, 10], [20, 2, 1])[0];
+                                currentChunk.blocks[i][j][k] = pygletAdapter.math.choices([0, 37, 38], [20, 2, 1])[0];
                             } else if (j == 14) {
-                                currentChunk.blocks[i][j][k] = 2;
+                                currentChunk.blocks[i][j][k] = 3;
                             } else if (j > 10) {
-                                currentChunk.blocks[i][j][k] = 4;
+                                currentChunk.blocks[i][j][k] = 2;
                             } else {
-                                currentChunk.blocks[i][j][k] = 5;
+                                currentChunk.blocks[i][j][k] = 1;
                             }
                         }
                     }
