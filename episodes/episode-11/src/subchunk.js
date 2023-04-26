@@ -83,17 +83,25 @@ class Subchunk {
                             this.position[2] + localZ
                         ]
 
-                        // if block is cube, we want it to check neighbouring blocks so that we don't uselessly render faces
-						// if block isn't a cube, we just want to render all faces, regardless of neighbouring blocks
-						// since the vast majority of blocks are probably anyway going to be cubes, this won't impact performance all that much; the amount of useless faces drawn is going to be minimal
+                        const canRenderFace = (position) => {
+                            if (!this.world.isOpaqueBlock(position)) {
+                                if (blockType.glass && this.world.getBlockNumber(position) == blockNumber) {
+                                    return false;
+                                }
+
+                                return true;
+                            }
+
+                            return false;
+                        };
 
                         if (blockType.isCube) {
-                            if (!this.world.isOpaqueBlock([x + 1, y, z])) addFace(blockType, [x, y, z], 0);
-                            if (!this.world.isOpaqueBlock([x - 1, y, z])) addFace(blockType, [x, y, z], 1);
-                            if (!this.world.isOpaqueBlock([x, y + 1, z])) addFace(blockType, [x, y, z], 2);
-                            if (!this.world.isOpaqueBlock([x, y - 1, z])) addFace(blockType, [x, y, z], 3);
-                            if (!this.world.isOpaqueBlock([x, y, z + 1])) addFace(blockType, [x, y, z], 4);
-                            if (!this.world.isOpaqueBlock([x, y, z - 1])) addFace(blockType, [x, y, z], 5);
+                            if (canRenderFace([x + 1, y, z])) addFace(blockType, [x, y, z], 0);
+                            if (canRenderFace([x - 1, y, z])) addFace(blockType, [x, y, z], 1);
+                            if (canRenderFace([x, y + 1, z])) addFace(blockType, [x, y, z], 2);
+                            if (canRenderFace([x, y - 1, z])) addFace(blockType, [x, y, z], 3);
+                            if (canRenderFace([x, y, z + 1])) addFace(blockType, [x, y, z], 4);
+                            if (canRenderFace([x, y, z - 1])) addFace(blockType, [x, y, z], 5);
                         } else {
                             for (let face = 0; face < blockType.vertexPositions.length; face++) {
                                 addFace(blockType, [x, y, z], face);

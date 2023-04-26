@@ -11,11 +11,14 @@ class BlockType {
         model = Cube
     ) {
         this.name = name;
+        this.model = model;
+        this.blockFaceTextures = blockFaceTextures;
 
         // create members based on model attributes
 
         this.transparent = model.transparent;
         this.isCube = model.isCube;
+        this.glass = model.glass;
 
         // replace data contained in numbers.py with model specific data
 
