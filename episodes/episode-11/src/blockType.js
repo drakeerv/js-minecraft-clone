@@ -41,15 +41,21 @@ class BlockType {
             const textureIndex = textureManager.textures.indexOf(texture);
 
             if (face == "all") {
-                setBlockFace(0, textureIndex);
-                setBlockFace(1, textureIndex);
-                setBlockFace(2, textureIndex);
-                setBlockFace(3, textureIndex);
-                setBlockFace(4, textureIndex);
-                setBlockFace(5, textureIndex);
+                for (let i = 0; i < this.texCoords.length; i++) {
+                    setBlockFace(i, textureIndex);
+                }
             } else if (face == "sides") {
                 setBlockFace(0, textureIndex);
                 setBlockFace(1, textureIndex);
+                setBlockFace(4, textureIndex);
+                setBlockFace(5, textureIndex);
+            } else if (face == "x") {
+                setBlockFace(0, textureIndex);
+                setBlockFace(1, textureIndex);
+            } else if (face == "y") {
+                setBlockFace(2, textureIndex);
+                setBlockFace(3, textureIndex);
+            } else if (face == "z") {
                 setBlockFace(4, textureIndex);
                 setBlockFace(5, textureIndex);
             } else {

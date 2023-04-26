@@ -133,6 +133,10 @@ class Window extends pygletAdapter.window.Window {
             this.camera.input[1] += 1;
         } else if ((key == "ShiftLeft" || key == "KeyC") && this.camera.input[1] >= 0) {
             this.camera.input[1] -= 1;
+        } else if (key == "KeyG") {
+            this.holding = pygletAdapter.math.randint(1, this.world.blockTypes.length - 1);
+        } else if (key == "KeyO") {
+            // save
         } else if (key == "Escape") {
             this.mouseCaptured = false;
             this.setExclusiveMouse(false);

@@ -234,6 +234,10 @@ class pygletMath {
 
         return result;
     }
+
+    randint(low, high) {
+        return Math.floor(Math.random() * (high - low)) + low;
+    }
 }
 
 class PygletAdapter {

@@ -5,33 +5,78 @@ import BlockType from "./blockType.js";
 import Chunk, { chunkWidth, chunkHeight, chunkLength } from "./chunk.js";
 import pygletAdapter from "../../adapter.js";
 
-import * as Plant from "./models/plant.js";
-import * as Cactus from "./models/cactus.js";
 import * as Models from "./models/models.js";
 
 class World {
     constructor() {
         this.textureManager = new TextureManager(16, 16, 256);
         this.blockTypes = [null];
+        this.hasMap = false;
 
-        this.blockTypes.push(new BlockType(this.textureManager, "cobblestone", { "all": "cobblestone" }));
-        this.blockTypes.push(new BlockType(this.textureManager, "grass", { "top": "grass", "bottom": "dirt", "sides": "grass_side" }));
-        this.blockTypes.push(new BlockType(this.textureManager, "grass_block", { "all": "grass" }));
-        this.blockTypes.push(new BlockType(this.textureManager, "dirt", { "all": "dirt" }));
-        this.blockTypes.push(new BlockType(this.textureManager, "stone", { "all": "stone" }));
-        this.blockTypes.push(new BlockType(this.textureManager, "sand", { "all": "sand" }));
-        this.blockTypes.push(new BlockType(this.textureManager, "planks", { "all": "planks" }));
-        this.blockTypes.push(new BlockType(this.textureManager, "log", { "top": "log_top", "bottom": "log_top", "sides": "log_side" }));
-        this.blockTypes.push(new BlockType(this.textureManager, "daisy", {"all": "daisy"}, Models.Plant));
-        this.blockTypes.push(new BlockType(this.textureManager, "rose", {"all": "rose"}, Models.Plant));
-        this.blockTypes.push(new BlockType(this.textureManager, "cactus", {"top": "cactus_top", "bottom": "cactus_bottom", "sides": "cactus_side"}, Models.Cactus));
-        this.blockTypes.push(new BlockType(this.textureManager, "dead_bush", {"all": "dead_bush"}, Models.Plant));
+        fetch("./src/data/blocks.mcpy").then(response => response.text()).then(blocksDataFile => {
+            const blocksData = blocksDataFile.split("\n");
 
-        this.textureManager.loadTextures().then(() => {
-            this.textureManager.generateMipmaps();
+            for (const block of blocksData) {
+                if (block.startsWith("#") || block.trim().length == 0) { // skip if empty line or comment
+                    continue;
+                }
+
+                const split = block.trim().split(":", 2);
+                const number = parseInt(split[0].trim());
+                const props = split[1].trim();
+
+                // default black
+
+                let name = "Uknown";
+                let model = Models.Cube;
+                let texture = { "all": "uknown" };
+
+                // parse properties
+                for (let prop of props.split(",")) {
+                    prop = prop.trim();
+                    prop = prop.split(" ", 2).filter(entry => { return entry.trim() != ""; });
+
+                    if (prop[0] == "sameas") {
+                        const sameasNumber = parseInt(prop[1]);
+
+                        name = this.blockTypes[sameasNumber].name;
+                        model = this.blockTypes[sameasNumber].model;
+                        texture = this.blockTypes[sameasNumber].textures;
+                    } else if (prop[0] == "name") {
+                        name = prop[1];
+                    } else if (prop[0].startsWith("texture")) {
+                        const side = prop[0].split(".")[1];
+                        texture[side] = prop[1].trim();
+                    } else if (prop[0] == "model") {
+                        const modelName = prop[1].split(".")[1].split("_").map(word => { return word[0].toUpperCase() + word.slice(1); }).join("");
+                        model = Models[modelName];
+                    }
+                }
+
+                // add block type
+
+                const blockType = new BlockType(this.textureManager, name, texture, model);
+
+                if (number < this.blockTypes.length) {
+                    this.blockTypes[number] = blockType;
+                } else {
+                    this.blockTypes.push(blockType);
+                }
+            }
+
+            this.textureManager.loadTextures().then(() => {
+                this.textureManager.generateMipmaps();
+                this.loadWorld();
+            });
         });
 
         this.chunks = {};
+    }
+
+    loadWorld() {
+        if (this.hasMap) return;
+
+        this.hasMap = true;
 
         for (let x = -1; x < 1; x++) {
             for (let z = -1; z < 1; z++) {

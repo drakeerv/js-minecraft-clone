@@ -1,6 +1,8 @@
-const transparent = true
-const isCube = false
-const glass = false
+"use strict";
+
+const transparent = true;
+const isCube = false;
+const glass = false;
 
 const vertexPositions = [
     [ 0.25,  0.4375,  0.50,   0.25, -0.5625,  0.50,   0.25, -0.5625, -0.50,   0.25,  0.4375, -0.50], // right
@@ -11,7 +13,7 @@ const vertexPositions = [
     [ 0.50,  0.4375,  0.25,   0.50, -0.5625,  0.25,  -0.50, -0.5625,  0.25,  -0.50,  0.4375,  0.25], // front
     [ 0.50,  0.4375, -0.25,   0.50, -0.5625, -0.25,  -0.50, -0.5625, -0.25,  -0.50,  0.4375, -0.25], // back
     [-0.50,  0.4375, -0.25,  -0.50, -0.5625, -0.25,   0.50, -0.5625, -0.25,   0.50,  0.4375, -0.25], // back
-]
+];
 
 const texCoords = [
     [0.0, 1.0, 0.0,  0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 1.0, 0.0],
@@ -22,7 +24,7 @@ const texCoords = [
     [0.0, 1.0, 0.0,  0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 1.0, 0.0],
     [0.0, 1.0, 0.0,  0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 1.0, 0.0],
     [0.0, 1.0, 0.0,  0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 1.0, 0.0],
-]
+];
 
 const shadingValues = [
     [0.6, 0.6, 0.6, 0.6],
@@ -33,6 +35,6 @@ const shadingValues = [
     [0.8, 0.8, 0.8, 0.8],
     [0.8, 0.8, 0.8, 0.8],
     [0.8, 0.8, 0.8, 0.8],
-]
+];
 
 export { transparent, isCube, glass, vertexPositions, texCoords, shadingValues };
