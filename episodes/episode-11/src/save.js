@@ -1,6 +1,6 @@
 "use strict";
 
-import * as NBT from "https://cdn.jsdelivr.net/npm/nbtify/dist/index.min.js";
+import * as NBT from "//cdn.jsdelivr.net/npm/nbtify/dist/index.min.js";
 import pygletAdapter from "../../adapter.js";
 
 import Chunk, {chunkWidth, chunkHeight, chunkLength} from "./chunk.js";
@@ -88,6 +88,7 @@ class Save {
         try {
             chunkBlocks = (await NBT.read(this.fs.readFileSync(chunkPath))).data.Level.Blocks;
         } catch (e) {
+            console.log(e);
             return;
         }
 
