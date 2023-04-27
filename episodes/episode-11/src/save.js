@@ -88,7 +88,6 @@ class Save {
         try {
             chunkBlocks = (await NBT.read(this.fs.readFileSync(chunkPath))).data.Level.Blocks;
         } catch (e) {
-            console.log(e);
             return;
         }
 
