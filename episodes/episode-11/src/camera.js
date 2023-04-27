@@ -21,7 +21,7 @@ class Camera {
 
         this.input = [0, 0, 0];
 
-        this.position = [0, 0, 0];
+        this.position = [0, 80, 0];
         this.rotation = [-Math.PI / 2, 0];
     }
 

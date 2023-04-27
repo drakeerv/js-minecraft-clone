@@ -6,13 +6,14 @@ const gl = pygletAdapter.gl;
 import Subchunk, { subchunkWidth, subchunkHeight, subchunkLength } from "./subchunk.js";
 
 const chunkWidth = 16
-const chunkHeight = 16
+const chunkHeight = 128
 const chunkLength = 16
 
 class Chunk {
     constructor(world, chunkPosition) {
         this.world = world;
 
+        this.modified = false;
         this.chunkPosition = chunkPosition;
 
         this.position = [

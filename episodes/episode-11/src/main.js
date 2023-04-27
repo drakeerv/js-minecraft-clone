@@ -45,7 +45,7 @@ class Window extends pygletAdapter.window.Window {
 
         // misc stuff
 
-        this.holding = 7;
+        this.holding = 5;
     }
 
     async update(deltaTime) {
@@ -136,7 +136,7 @@ class Window extends pygletAdapter.window.Window {
         } else if (key == "KeyG") {
             this.holding = pygletAdapter.math.randint(1, this.world.blockTypes.length - 1);
         } else if (key == "KeyO") {
-            // save
+            this.world.save.save();
         } else if (key == "Escape") {
             this.mouseCaptured = false;
             this.setExclusiveMouse(false);

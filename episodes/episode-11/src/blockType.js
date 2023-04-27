@@ -7,7 +7,7 @@ class BlockType {
     constructor(
         textureManager,
         name = "uknown",
-        blockFaceTextures = { all: "cobblestone" },
+        blockFaceTextures = { all: "uknown" },
         model = Cube
     ) {
         this.name = name;

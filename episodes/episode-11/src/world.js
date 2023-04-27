@@ -14,6 +14,8 @@ class World {
         this.textureManager = new TextureManager(16, 16, 256);
         this.blockTypes = [null];
         this.hasMap = false;
+        this.chunks = {};
+        this.save = new Save(this);
 
         fetch("./src/data/blocks.mcpy").then(response => response.text()).then(blocksDataFile => {
             const blocksData = blocksDataFile.split("\n");
@@ -40,10 +42,11 @@ class World {
 
                     if (prop[0] == "sameas") {
                         const sameasNumber = parseInt(prop[1]);
+                        const sameasBlock = this.blockTypes[sameasNumber];
 
-                        name = this.blockTypes[sameasNumber].name;
-                        model = this.blockTypes[sameasNumber].model;
-                        texture = this.blockTypes[sameasNumber].textures;
+                        name = sameasBlock.name;
+                        model = sameasBlock.model;
+                        texture = sameasBlock.blockFaceTextures;
                     } else if (prop[0] == "name") {
                         name = prop[1];
                     } else if (prop[0].startsWith("texture")) {
@@ -71,39 +74,15 @@ class World {
                 this.loadWorld();
             });
         });
-
-        this.chunks = {};
     }
 
-    loadWorld() {
+    async loadWorld() {
         if (this.hasMap) return;
 
         this.hasMap = true;
 
-        for (let x = -1; x < 1; x++) {
-            for (let z = -1; z < 1; z++) {
-                const chunkPosition = [x, -1, z];
-                const currentChunk = new Chunk(this, chunkPosition);
-
-                for (let i = 0; i < chunkWidth; i++) {
-                    for (let j = 0; j < chunkHeight; j++) {
-                        for (let k = 0; k < chunkLength; k++) {
-                            if (j == 15) {
-                                currentChunk.blocks[i][j][k] = pygletAdapter.math.choices([0, 37, 38, 4], [20, 2, 1, 0.5])[0];
-                            } else if (j == 14) {
-                                currentChunk.blocks[i][j][k] = 2;
-                            } else if (j > 10) {
-                                currentChunk.blocks[i][j][k] = 3;
-                            } else {
-                                currentChunk.blocks[i][j][k] = 1;
-                            }
-                        }
-                    }
-                }
-
-                this.chunks[chunkPosition] = currentChunk;
-            }
-        }
+        await this.save.loadFs();
+        await this.save.load();
 
         Object.values(this.chunks).forEach((chunk) => {
             chunk.updateSubchunkMeshes();
@@ -185,17 +164,23 @@ class World {
         let lx, ly, lz;
         [lx, ly, lz] = this.getLocalPosition(position);
 
-        this.chunks[chunkPosition.join(",")].blocks[lx][ly][lz] = number;
-        this.chunks[chunkPosition.join(",")].updateAtPosition(position);
-        this.chunks[chunkPosition.join(",")].updateMesh();
+        const chunkPositionString = chunkPosition.join(",");
+
+        this.chunks[chunkPositionString].blocks[lx][ly][lz] = number;
+        this.chunks[chunkPositionString].modified = true;
+
+        this.chunks[chunkPositionString].updateAtPosition(position);
+        this.chunks[chunkPositionString].updateMesh();
 
         let cx, cy, cz;
         [cx, cy, cz] = chunkPosition;
 
         const tryUpdateChunkAtPosition = (chunkPosition, position) => {
             if (chunkPosition in this.chunks) {
-                this.chunks[chunkPosition.join(",")].updateAtPosition(position);
-                this.chunks[chunkPosition.join(",")].updateMesh();
+                const chunkPositionString = chunkPosition.join(",");
+
+                this.chunks[chunkPositionString].updateAtPosition(position);
+                this.chunks[chunkPositionString].updateMesh();
             }
         }
 
