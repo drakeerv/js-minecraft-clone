@@ -3,7 +3,8 @@ if (!window.glInstance) {
     const glOptions = {
         depth: true,
         antialias: true,
-        premultipliedAlpha: false
+        premultipliedAlpha: false,
+        alpha: false
     };
     
     window.glInstance = glElement.getContext("webgl2", glOptions) || glElement.getContext("experimental-webgl2", glOptions);

@@ -169,7 +169,7 @@ class Save {
             if (chunkPositionArray[1] !== 0) continue; // reject all chunks above and below the world limit
 
             if (chunk.modified) {
-                await this.saveChunk(chunkPositionArray);
+                this.saveChunk(chunkPositionArray);
                 chunk.modified = false;
             }
         }
