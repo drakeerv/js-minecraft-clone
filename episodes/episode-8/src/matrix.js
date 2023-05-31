@@ -1,7 +1,11 @@
 "use strict";
 
 function copyMatrix(matrix) {
-    return matrix.map((row) => row.slice());
+    if (window.structuredClone) {
+        return structuredClone(matrix);
+    } else {
+        matrix.map((row) => row.slice());
+    }
 }
 
 const cleanMatrix = Array.from({ length: 4 }, () => Array(4).fill(0.0));
