@@ -6,7 +6,7 @@ const gl = pygletAdapter.gl;
 import Shader from "./shader.js";
 import Camera from "./camera.js";
 import World from "./world.js";
-import Hit, {hitRange} from "./hit.js";
+import Hit, { hitRange } from "./hit.js";
 
 class Window extends pygletAdapter.window.Window {
     async init() {
@@ -22,7 +22,7 @@ class Window extends pygletAdapter.window.Window {
         this.shader.use();
 
         // pyglet stuff
-        
+
         pygletAdapter.clock.scheduleInterval(this.update.bind(this), 1000 / 60);
         this.mouseCaptured = false;
 
@@ -40,7 +40,7 @@ class Window extends pygletAdapter.window.Window {
         gl.uniform1i(this.shaderSamplerLocation, 0);
 
         // set clear color
-        
+
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
         // misc stuff
@@ -68,7 +68,7 @@ class Window extends pygletAdapter.window.Window {
     }
 
     // input functions
-    
+
     async onResize(width, height) {
         console.log(`Resize ${width} * ${height}`);
         gl.viewport(0, 0, width, height);

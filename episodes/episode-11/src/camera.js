@@ -32,10 +32,10 @@ class Camera {
         this.position[1] += this.input[1] * multiplier;
 
         if (this.input[0] || this.input[2]) {
-			const angle = this.rotation[0] - Math.atan2(this.input[2], this.input[0]) + Math.PI / 2;
-			
-			this.position[0] += Math.cos(angle) * multiplier;
-			this.position[2] += Math.sin(angle) * multiplier;
+            const angle = this.rotation[0] - Math.atan2(this.input[2], this.input[0]) + Math.PI / 2;
+
+            this.position[0] += Math.cos(angle) * multiplier;
+            this.position[2] += Math.sin(angle) * multiplier;
         }
     }
 

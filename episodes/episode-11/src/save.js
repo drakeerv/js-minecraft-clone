@@ -1,6 +1,6 @@
 "use strict";
 
-import * as NBT from "//cdn.jsdelivr.net/npm/nbtify/dist/index.min.js";
+import * as NBT from "//cdn.jsdelivr.net/npm/nbtify@1.44.1/dist/index.min.js";
 import pygletAdapter from "../../adapter.js";
 
 import Chunk, { chunkWidth, chunkHeight, chunkLength } from "./chunk.js";
