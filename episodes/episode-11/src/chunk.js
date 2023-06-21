@@ -128,7 +128,7 @@ class Chunk {
         });
 
         // send the full mesh data to the GPU and free the memory used client-side (we don't need it anymore)
-		// don't forget to save the length of 'self.mesh_indices' before freeing
+        // don't forget to save the length of 'self.mesh_indices' before freeing
 
         this.meshIndicesLength = this.meshIndices.length;
         this.sendMeshDataToGpu();

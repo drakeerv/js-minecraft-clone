@@ -3,7 +3,7 @@
 import * as NBT from "//cdn.jsdelivr.net/npm/nbtify/dist/index.min.js";
 import pygletAdapter from "../../adapter.js";
 
-import Chunk, {chunkWidth, chunkHeight, chunkLength} from "./chunk.js";
+import Chunk, { chunkWidth, chunkHeight, chunkLength } from "./chunk.js";
 
 function dirname(path) {
     return path.substring(0, path.lastIndexOf("/"));
@@ -115,11 +115,10 @@ class Save {
 
         const chunkPath = this.chunkPositionToPath(chunkPosition);
         let chunkData = null;
-        
+
         try {
             chunkData = await NBT.read(this.fs.readFileSync(chunkPath));
         } catch (e) {
-            console.log(NBT.NBTData)
             chunkData = new NBT.NBTData({
                 Level: {
                     xPos: x,
