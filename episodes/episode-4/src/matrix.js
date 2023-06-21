@@ -1,11 +1,7 @@
 "use strict";
 
 function copyMatrix(matrix) {
-    if (window.structuredClone) {
-        return structuredClone(matrix);
-    } else {
-        matrix.map((row) => row.slice());
-    }
+  return matrix.map((row) => row.slice());
 }
 
 const cleanMatrix = Array.from({ length: 4 }, () => Array(4).fill(0.0));
@@ -17,175 +13,175 @@ identityMatrix[2][2] = 1.0;
 identityMatrix[3][3] = 1.0;
 
 function multiplyMatrices(xMatrix, yMatrix) {
-    let resultMatrix = copyMatrix(cleanMatrix);
+  let resultMatrix = copyMatrix(cleanMatrix);
 
-    for (let i = 0; i < 4; i++) {
-        for (let j = 0; j < 4; j++) {
-            resultMatrix[i][j] =
-                xMatrix[0][j] * yMatrix[i][0] +
-                xMatrix[1][j] * yMatrix[i][1] +
-                xMatrix[2][j] * yMatrix[i][2] +
-                xMatrix[3][j] * yMatrix[i][3];
-        }
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      resultMatrix[i][j] =
+        xMatrix[0][j] * yMatrix[i][0] +
+        xMatrix[1][j] * yMatrix[i][1] +
+        xMatrix[2][j] * yMatrix[i][2] +
+        xMatrix[3][j] * yMatrix[i][3];
     }
+  }
 
-    return resultMatrix;
+  return resultMatrix;
 }
 
 function radians(degrees) {
-    return degrees * (Math.PI / 180);
+  return degrees * (Math.PI / 180);
 }
 
 class Matrix {
-    constructor(base = null) {
-        if (typeof base === "Matrix") {
-            this.data = copyMatrix(base.data);
-        } else if (typeof base === "array") {
-            this.data = copyMatrix(base);
-        } else if (typeof base === "object" && base !== null) {
-            this.data = copyMatrix(base);
-        } else {
-            this.data = copyMatrix(identityMatrix);
-        }
+  constructor(base = null) {
+    if (typeof base === "Matrix") {
+      this.data = copyMatrix(base.data);
+    } else if (typeof base === "array") {
+      this.data = copyMatrix(base);
+    } else if (typeof base === "object" && base !== null) {
+      this.data = copyMatrix(base);
+    } else {
+      this.data = copyMatrix(identityMatrix);
     }
+  }
 
-    loadIdentity() {
-        this.data = copyMatrix(identityMatrix);
+  loadIdentity() {
+    this.data = copyMatrix(identityMatrix);
+  }
+
+  multiply(other) {
+    return new Matrix(multiplyMatrices(this.data, other.data));
+  }
+
+  inplaceMultiply(other) {
+    this.data = multiplyMatrices(this.data, other.data);
+  }
+
+  [Symbol.for("operator.multiply")](other) {
+    return multiplyMatrices(this.data, other.data);
+  }
+
+  [Symbol.for("operator.multiplyAssign")](other) {
+    this.data = multiplyMatrices(this.data, other.data);
+  }
+
+  scale(x, y, z) {
+    for (let i = 0; i < 4; i++) {
+      this.data[0][i] *= x;
     }
-
-    multiply(other) {
-        return new Matrix(multiplyMatrices(this.data, other.data));
+    for (let i = 0; i < 4; i++) {
+      this.data[1][i] *= y;
     }
-
-    inplaceMultiply(other) {
-        this.data = multiplyMatrices(this.data, other.data);
+    for (let i = 0; i < 4; i++) {
+      this.data[2][i] *= z;
     }
+  }
 
-    [Symbol.for("operator.multiply")](other) {
-        return multiplyMatrices(this.data, other.data);
+  translate(x, y, z) {
+    for (let i = 0; i < 4; i++) {
+      this.data[3][i] +=
+        this.data[0][i] * x + this.data[1][i] * y + this.data[2][i] * z;
     }
+  }
 
-    [Symbol.for("operator.multiplyAssign")](other) {
-        this.data = multiplyMatrices(this.data, other.data);
-    }
+  rotate(angle, x, y, z) {
+    const magnitude = Math.sqrt(x * x + y * y + z * z);
 
-    scale(x, y, z) {
-        for (let i = 0; i < 4; i++) {
-            this.data[0][i] *= x;
-        }
-        for (let i = 0; i < 4; i++) {
-            this.data[1][i] *= y;
-        }
-        for (let i = 0; i < 4; i++) {
-            this.data[2][i] *= z;
-        }
-    }
+    x /= -magnitude;
+    y /= -magnitude;
+    z /= -magnitude;
 
-    translate(x, y, z) {
-        for (let i = 0; i < 4; i++) {
-            this.data[3][i] +=
-                this.data[0][i] * x + this.data[1][i] * y + this.data[2][i] * z;
-        }
-    }
+    const sinAngle = Math.sin(angle);
+    const cosAngle = Math.cos(angle);
+    const oneMinusCos = 1.0 - cosAngle;
 
-    rotate(angle, x, y, z) {
-        const magnitude = Math.sqrt(x * x + y * y + z * z);
+    const xx = x * x;
+    const yy = y * y;
+    const zz = z * z;
 
-        x /= -magnitude;
-        y /= -magnitude;
-        z /= -magnitude;
+    const xy = x * y;
+    const yz = y * z;
+    const zx = z * x;
 
-        const sinAngle = Math.sin(angle);
-        const cosAngle = Math.cos(angle);
-        const oneMinusCos = 1.0 - cosAngle;
+    const xs = x * sinAngle;
+    const ys = y * sinAngle;
+    const zs = z * sinAngle;
 
-        const xx = x * x;
-        const yy = y * y;
-        const zz = z * z;
+    const rotationMatrix = copyMatrix(cleanMatrix);
 
-        const xy = x * y;
-        const yz = y * z;
-        const zx = z * x;
+    rotationMatrix[0][0] = oneMinusCos * xx + cosAngle;
+    rotationMatrix[0][1] = oneMinusCos * xy - zs;
+    rotationMatrix[0][2] = oneMinusCos * zx + ys;
 
-        const xs = x * sinAngle;
-        const ys = y * sinAngle;
-        const zs = z * sinAngle;
+    rotationMatrix[1][0] = oneMinusCos * xy + zs;
+    rotationMatrix[1][1] = oneMinusCos * yy + cosAngle;
+    rotationMatrix[1][2] = oneMinusCos * yz - xs;
 
-        const rotationMatrix = copyMatrix(cleanMatrix);
+    rotationMatrix[2][0] = oneMinusCos * zx - ys;
+    rotationMatrix[2][1] = oneMinusCos * yz + xs;
+    rotationMatrix[2][2] = oneMinusCos * zz + cosAngle;
 
-        rotationMatrix[0][0] = oneMinusCos * xx + cosAngle;
-        rotationMatrix[0][1] = oneMinusCos * xy - zs;
-        rotationMatrix[0][2] = oneMinusCos * zx + ys;
+    rotationMatrix[3][3] = 1.0;
+    this.data = multiplyMatrices(this.data, rotationMatrix);
+  }
 
-        rotationMatrix[1][0] = oneMinusCos * xy + zs;
-        rotationMatrix[1][1] = oneMinusCos * yy + cosAngle;
-        rotationMatrix[1][2] = oneMinusCos * yz - xs;
+  rotate2d(x, y) {
+    this.rotate(x, 0, 1.0, 0);
+    this.rotate(-y, Math.cos(x), 0, Math.sin(x));
+  }
 
-        rotationMatrix[2][0] = oneMinusCos * zx - ys;
-        rotationMatrix[2][1] = oneMinusCos * yz + xs;
-        rotationMatrix[2][2] = oneMinusCos * zz + cosAngle;
+  frustum(left, right, bottom, top, near, far) {
+    const deltax = right - left;
+    const deltay = top - bottom;
+    const deltaz = far - near;
 
-        rotationMatrix[3][3] = 1.0;
-        this.data = multiplyMatrices(this.data, rotationMatrix);
-    }
+    const frustumMatrix = copyMatrix(cleanMatrix);
 
-    rotate2d(x, y) {
-        this.rotate(x, 0, 1.0, 0);
-        this.rotate(-y, Math.cos(x), 0, Math.sin(x));
-    }
+    frustumMatrix[0][0] = (2 * near) / deltax;
+    frustumMatrix[1][1] = (2 * near) / deltay;
 
-    frustum(left, right, bottom, top, near, far) {
-        const deltax = right - left;
-        const deltay = top - bottom;
-        const deltaz = far - near;
+    frustumMatrix[2][0] = (right + left) / deltax;
+    frustumMatrix[2][1] = (top + bottom) / deltay;
+    frustumMatrix[2][2] = -(near + far) / deltaz;
 
-        const frustumMatrix = copyMatrix(cleanMatrix);
+    frustumMatrix[2][3] = -1.0;
+    frustumMatrix[3][2] = (-2 * near * far) / deltaz;
 
-        frustumMatrix[0][0] = (2 * near) / deltax;
-        frustumMatrix[1][1] = (2 * near) / deltay;
+    this.data = multiplyMatrices(this.data, frustumMatrix);
+  }
 
-        frustumMatrix[2][0] = (right + left) / deltax;
-        frustumMatrix[2][1] = (top + bottom) / deltay;
-        frustumMatrix[2][2] = -(near + far) / deltaz;
+  perspective(fovy, aspect, near, far) {
+    const frustum_y = Math.tan(radians(fovy) / 2);
+    const frustum_x = frustum_y * aspect;
 
-        frustumMatrix[2][3] = -1.0;
-        frustumMatrix[3][2] = (-2 * near * far) / deltaz;
+    this.frustum(
+      -frustum_x * near,
+      frustum_x * near,
+      -frustum_y * near,
+      frustum_y * near,
+      near,
+      far
+    );
+  }
 
-        this.data = multiplyMatrices(this.data, frustumMatrix);
-    }
+  orthographic(left, right, bottom, top, near, far) {
+    const deltax = right - left;
+    const deltay = top - bottom;
+    const deltaz = far - near;
 
-    perspective(fovy, aspect, near, far) {
-        const frustum_y = Math.tan(radians(fovy) / 2);
-        const frustum_x = frustum_y * aspect;
+    const orthographicMatrix = copyMatrix(cleanMatrix);
 
-        this.frustum(
-            -frustum_x * near,
-            frustum_x * near,
-            -frustum_y * near,
-            frustum_y * near,
-            near,
-            far
-        );
-    }
+    orthographicMatrix[0][0] = 2 / deltax;
+    orthographicMatrix[3][0] = -(right + left) / deltax;
 
-    orthographic(left, right, bottom, top, near, far) {
-        const deltax = right - left;
-        const deltay = top - bottom;
-        const deltaz = far - near;
+    orthographicMatrix[1][1] = 2 / deltay;
+    orthographicMatrix[3][1] = -(top + bottom) / deltay;
 
-        const orthographicMatrix = copyMatrix(cleanMatrix);
+    orthographicMatrix[2][2] = -2 / deltaz;
+    orthographicMatrix[3][2] = -(near + far) / deltaz;
 
-        orthographicMatrix[0][0] = 2 / deltax;
-        orthographicMatrix[3][0] = -(right + left) / deltax;
-
-        orthographicMatrix[1][1] = 2 / deltay;
-        orthographicMatrix[3][1] = -(top + bottom) / deltay;
-
-        orthographicMatrix[2][2] = -2 / deltaz;
-        orthographicMatrix[3][2] = -(near + far) / deltaz;
-
-        this.data = multiplyMatrices(this.data, orthographicMatrix);
-    }
+    this.data = multiplyMatrices(this.data, orthographicMatrix);
+  }
 }
 
 export default Matrix;

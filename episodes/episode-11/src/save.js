@@ -119,6 +119,7 @@ class Save {
         try {
             chunkData = await NBT.read(this.fs.readFileSync(chunkPath));
         } catch (e) {
+            console.log(NBT.NBTData)
             chunkData = new NBT.NBTData({
                 Level: {
                     xPos: x,
