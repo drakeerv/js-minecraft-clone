@@ -1,22 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JS Minecraft Clone</title>
+    <style>
+        html,
+        body {
+            font-family: Arial, sans-serif;
+            background: #222;
+            color: white;
+            /* make it center align */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        details:hover>summary {
+            background: radial-gradient(circle, #484848, #525252);
+        }
+
+        details>summary {
+            border: 2px solid transparent;
+            outline: none;
+            padding: 1rem;
+            display: block;
+            background: #444;
+            padding-left: 2.2rem;
+            position: relative;
+            cursor: pointer;
+            width: 400px;
+        }
+
+        details>summary:focus {
+            border-color: black;
+        }
+
+        details {
+            width: 455px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        details[open]>summary:before {
+            transform: rotate(90deg);
+        }
+
+        details>summary:before {
+            content: "";
+            border-width: 0.4rem;
+            border-style: solid;
+            border-color: transparent transparent transparent #fff;
+            position: absolute;
+            top: 1.3rem;
+            left: 1rem;
+            transform: rotate(0);
+            transform-origin: 0.2rem 50%;
+            transition: 0.25s transform ease;
+        }
+
+        details>.contents {
+            border-top: none;
+            padding: 10px;
+            border: 2px solid #888;
+            border-top: none;
+        }
+
+        details>.contents>p {
+            margin: 0;
+            padding-bottom: 10px;
+        }
+
+        details>.contents>p:last-child {
+            padding: 0;
+        }
+
+        details>.contents>img {
+            max-width: 100%;
+        }
+
+        details>.contents>a {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            background: #444;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        #credits>a {
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+    </style>
 </head>
+
 <body>
-    <a href="episodes/episode-1/index.html">Episode 1</a>
-    <a href="episodes/episode-2/index.html">Episode 2</a>
-    <a href="episodes/episode-3/index.html">Episode 3</a>
-    <a href="episodes/episode-4/index.html">Episode 4</a>
-    <a href="episodes/episode-5/index.html">Episode 5</a>
-    <a href="episodes/episode-6/index.html">Episode 6</a>
-    <a href="episodes/episode-7/index.html">Episode 7</a>
-    <a href="episodes/episode-8/index.html">Episode 8</a>
-    <a href="episodes/episode-9/index.html">Episode 9</a>
-    <a href="episodes/episode-10/index.html">Episode 10</a>
-    <a href="episodes/episode-11/index.html">Episode 11</a>
+    <h1>JS Minecraft Clone</h1>
+    <h3 id="credits">by <a href="https://github.com/drakeerv">drakeerv</a>, original by <a
+            href="https://github.com/obiwac">obiwac</a></h3>
+
+    <details>
+        <summary>Episode 1</summary>
+        <div class="contents">
+            <p>Episode 1 is the first episode of the series. It introduces the basic concepts of creating a window</p>
+            <a href="episodes/episode-1/index.html">Launch</a>
+        </div>
+    </details>
+    <details>
+        <summary>Episode 2</summary>
+        <div class="contents">
+            <p>Episode 2 is the second episode of the series. It introduces the basic concepts drawing triangles</p>
+            <a href="episodes/episode-2/index.html">Launch</a>
+        </div>
+    </details>
+    <details>
+        <summary>Episode 3</summary>
+        <div class="contents">
+            <p>Episode 3 is the third episode of the series. It introduces the basic concepts of shaders</p>
+            <a href="episodes/episode-3/index.html">Launch</a>
+        </div>
+    </details>
+    <details>
+        <summary>Episode 4</summary>
+        <div class="contents">
+            <p>Episode 4 is the fourth episode of the series. It introduces the basic concepts of rotating triangles</p>
+            <a href="episodes/episode-4/index.html">Launch</a>
+        </div>
+    </details>
+    <details>
+        <summary>Episode 5</summary>
+        <div class="contents">
+            <p>Episode 5 is the fifth episode of the series. It introduces the basic concepts of how to make a cube</p>
+            <a href="episodes/episode-5/index.html">Launch</a>
+        </div>
+    </details>
+    <details>
+        <summary>Episode 6</summary>
+        <div class="contents">
+            <p>Episode 6 is the sixth episode of the series. It introduces the basic concepts of how to make a camera
+            </p>
+            <a href="episodes/episode-6/index.html">Launch</a>
+        </div>
+    </details>
+    <details>
+        <summary>Episode 7</summary>
+        <div class="contents">
+            <p>Episode 7 is the seventh episode of the series. It introduces the basic concepts of basic shading</p>
+            <a href="episodes/episode-7/index.html">Launch</a>
+        </div>
+    </details>
+    <details>
+        <summary>Episode 8</summary>
+        <div class="contents">
+            <p>Episode 8 is the eighth episode of the series. It introduces the basic concepts of the game and how
+                to move around the world.</p>
+            <a href="episodes/episode-8/index.html">Launch</a>
+        </div>
+    </details>
+    <details>
+        <summary>Episode 9</summary>
+        <div class="contents">
+            <p>Episode 9 is the ninth episode of the series. It introduces the basic concepts of chunks and optimizing
+                meshes</p>
+            <a href="episodes/episode-9/index.html">Launch</a>
+        </div>
+    </details>
+    <details>
+        <summary>Episode 10</summary>
+        <div class="contents">
+            <p>Episode 10 is the tenth episode of the series. It introduces the basic concepts of non-standard blocks
+                (ex. flowers)</p>
+            <a href="episodes/episode-10/index.html">Launch</a>
+        </div>
+    </details>
+    <details>
+        <summary>Episode 11</summary>
+        <div class="contents">
+            <p>Episode 11 is the eleventh episode of the series. It introduces the basic concepts of loading and saving
+                maps</p>
+            <a href="episodes/episode-11/index.html">Launch</a>
+        </div>
+    </details>
 </body>
+
 </html>
