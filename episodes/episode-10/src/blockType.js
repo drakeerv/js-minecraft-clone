@@ -6,7 +6,7 @@ class BlockType {
     // new optional model argument (cube model by default)
     constructor(
         textureManager,
-        name = "uknown",
+        name = "unknown",
         blockFaceTextures = { all: "cobblestone" },
         model = Cube
     ) {
