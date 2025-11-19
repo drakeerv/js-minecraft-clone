@@ -4,7 +4,7 @@ import pygletAdapter from "../../adapter.js";
 const gl = pygletAdapter.gl;
 
 import Shader from "./shader.js";
-import Camera from "./camera.js";
+import Camera, { WALKING_SPEED, SPRINTING_SPEED } from "./camera.js";
 import World from "./world.js";
 import Hit, { hitRange } from "./hit.js";
 
@@ -133,6 +133,8 @@ class Window extends pygletAdapter.window.Window {
             this.camera.input[1] += 1;
         } else if ((key == "ShiftLeft" || key == "KeyC") && this.camera.input[1] >= 0) {
             this.camera.input[1] -= 1;
+        } else if ((key == "ControlLeft" || key == "KeyV")) {
+            this.camera.target_speed = SPRINTING_SPEED;
         } else if (key == "KeyG") {
             this.holding = pygletAdapter.math.randint(1, this.world.blockTypes.length - 1);
         } else if (key == "KeyO") {
@@ -160,6 +162,8 @@ class Window extends pygletAdapter.window.Window {
             this.camera.input[1] -= 1;
         } else if ((key == "ShiftLeft" || key == "KeyC") && this.camera.input[1] <= -1) {
             this.camera.input[1] += 1;
+        } else if ((key == "ControlLeft" || key == "KeyV")) {
+            this.camera.target_speed = WALKING_SPEED;
         }
     }
 

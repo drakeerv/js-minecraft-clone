@@ -1,14 +1,17 @@
 "use strict";
 
+import Entity from "./entity.js";
 import Matrix from "./matrix.js";
 
-const WALKING_SPEED = 7;
-const SPRINTING_SPEED = 21;
+const WALKING_SPEED = 4.317;
+const SPRINTING_SPEED = 7; // faster than in Minecraft, feels better
 
-class Camera {
-    constructor(shader, width, height) {
-        this.width = width;
-        this.height = height;
+class Player extends Entity {
+    constructor(world, shader, width, height) {
+        super(world);
+
+        this.view_width = width;
+        this.view_height = height;
 
         // create matrices
 
@@ -22,27 +25,42 @@ class Camera {
 
         // camera variables
 
+        this.eyelevel = this.height - 0.2;
         this.input = [0, 0, 0];
-
-        this.position = [0, 80, 0];
-        this.rotation = [-Math.PI / 2, 0];
 
         this.target_speed = WALKING_SPEED;
         this.speed = this.target_speed;
     }
 
-    updateCamera(deltaTime) {
-        this.speed += (this.target_speed - this.speed) * deltaTime * 20
-        const multiplier = this.speed * deltaTime;
+    update(deltaTime) {
+        // process input
 
-        this.position[1] += this.input[1] * multiplier;
+        if (deltaTime * 20 > 1) {
+            this.speed = this.target_speed;
+        } else {
+            this.speed += (this.target_speed - this.speed) * deltaTime * 20;
+        }
+
+        const multiplier = this.speed * (this.flying ? 2 : 1);
+
+        if (this.flying && this.input[1]) {
+            this.accel[1] = this.input[1] * multiplier;
+        }
 
         if (this.input[0] || this.input[2]) {
             const angle = this.rotation[0] - Math.atan2(this.input[2], this.input[0]) + Math.PI / 2;
 
-            this.position[0] += Math.cos(angle) * multiplier;
-            this.position[2] += Math.sin(angle) * multiplier;
+            this.accel[0] = Math.cos(angle) * multiplier;
+            this.accel[2] = Math.sin(angle) * multiplier;
         }
+
+        if (!this.flying && this.input[1] > 0) {
+            this.jump();
+        }
+        
+        // process physics & collisions &c
+
+        super.update(deltaTime);
     }
 
     updateMatrices() {
@@ -51,9 +69,9 @@ class Camera {
         this.pMatrix.loadIdentity();
         this.pMatrix.perspective(
             90 + 10 * (this.speed - WALKING_SPEED) / (SPRINTING_SPEED - WALKING_SPEED),
-            this.width / this.height,
-            0.1,
-            500
+			this.view_width / this.view_height,
+			0.1,
+			500
         );
 
         // create model view matrix
@@ -69,5 +87,5 @@ class Camera {
     }
 }
 
-export default Camera;
+export default Player;
 export { WALKING_SPEED, SPRINTING_SPEED };

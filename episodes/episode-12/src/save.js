@@ -22,7 +22,7 @@ let bfs = {};
 BrowserFS.install(bfs);
 
 class Save {
-    constructor(world, path = "/world11") {
+    constructor(world, path = "/world12") {
         this.world = world;
         this.path = path;
         this.fs = null;

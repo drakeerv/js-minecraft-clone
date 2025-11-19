@@ -1,5 +1,6 @@
 "use strict";
 
+import Collider from "./collider.js";
 import { Cube } from "./models/models.js";
 
 class BlockType {
@@ -20,6 +21,13 @@ class BlockType {
         this.isCube = model.isCube;
         this.glass = model.glass;
 
+        // create colliders
+
+        this.colliders = []
+        for (const collider of model.colliders) {
+            this.colliders.push(new Collider(...collider));
+        }
+
         // replace data contained in numbers.py with model specific data
 
         this.vertexPositions = model.vertexPositions;
@@ -28,6 +36,7 @@ class BlockType {
 
         const setBlockFace = (face, texture) => {
             // make sure we don't add inexistent faces
+
             if (face > this.texCoords.length - 1) return;
 
             this.texCoords[face] = this.texCoords[face].slice();
