@@ -23,7 +23,7 @@ class Window extends pygletAdapter.window.Window {
 
         // pyglet stuff
 
-        pygletAdapter.clock.scheduleInterval(this.update.bind(this), 1000 / 60);
+        pygletAdapter.updater.schedule(this.update.bind(this));
         this.mouseCaptured = false;
 
         // camera stuff

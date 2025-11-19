@@ -118,38 +118,48 @@ class PygletClock {
     
         if (elapsedTime >= intervalConfig.interval) {
             const deltaTime = elapsedTime / 1000;
-    
-            // reset the deltaTimeHistory if there is an excessive amount of lag (> 0.5 seconds)
-            if (deltaTime > 0.5) {
-                intervalConfig.deltaTimeHistory = [];
-            }
+            console.log(deltaTime);
     
             intervalConfig.lastTime = currentTime - (elapsedTime % intervalConfig.interval);
-    
-            // calculate the moving average of the delta times
-            intervalConfig.deltaTimeHistory.push(deltaTime);
-            if (intervalConfig.deltaTimeHistory.length > intervalConfig.movingAverageWindow) {
-                intervalConfig.deltaTimeHistory.shift();
-            }
-            const averageDeltaTime = intervalConfig.deltaTimeHistory.reduce((sum, value) => sum + value, 0) / intervalConfig.deltaTimeHistory.length;
-    
-            intervalConfig.callback(averageDeltaTime);
+            intervalConfig.callback(deltaTime);
         }
     }
 
-    scheduleInterval(callback, interval, movingAverageWindow = 10) {
+    scheduleInterval(callback, interval) {
         const randomKey = Math.random().toString(36).substring(7);
 
         this.intervals[randomKey] = {
             lastTime: window.performance.now(),
             interval: interval,
             callback: callback,
-            movingAverageWindow: movingAverageWindow,
-            deltaTimeHistory: [],
             intervalFunc: window.setInterval(() => {
                 this.#runInterval(randomKey);
             }, interval)
         }
+    }
+}
+
+class PygletUpdater {
+    constructor() {
+        this.callbacks = [];
+        this.lastTime = window.performance.now();
+        this.update();
+    }
+
+    schedule(callback) {
+        this.callbacks.push(callback);
+    }
+
+    update() {
+        const currentTime = window.performance.now();
+        const deltaTime = (currentTime - this.lastTime) / 1000;
+        this.lastTime = currentTime;
+
+        for (const callback of this.callbacks) {
+            callback(deltaTime);
+        }
+
+        window.requestAnimationFrame(this.update.bind(this));
     }
 }
 
@@ -245,6 +255,7 @@ class PygletAdapter {
     constructor() {
         this.window = {Window: PygletWindow}
         this.clock = new PygletClock();
+        this.updater = new PygletUpdater();
         this.image = new pygletImage();
         this.math = new pygletMath();
         this.gl = window.glInstance;

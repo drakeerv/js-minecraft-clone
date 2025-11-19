@@ -56,7 +56,7 @@ class Window extends pygletAdapter.window.Window {
 
         this.x = 0; // temporary variable
 
-        pygletAdapter.clock.scheduleInterval(this.update.bind(this), 1000 / 60);
+        pygletAdapter.updater.schedule(this.update.bind(this));
     }
 
     async update(deltaTime) {
