@@ -2,16 +2,16 @@
 
 import Collider from "./collider.js";
 
-const FLYING_ACCEL = (0, 0, 0);
-const GRAVITY_ACCEL = (0, -32, 0);
+// Acceleration / drag constants (must be arrays, not comma operator expressions)
+const FLYING_ACCEL = [0, 0, 0];
+const GRAVITY_ACCEL = [0, -32, 0];
 
-// these values all come (losely) from Minecraft, but are multiplied by 20 (since Miencraft runs at 20 TPS)
+// These values all come (loosely) from Minecraft, multiplied by 20 (since Minecraft runs at 20 TPS)
+const FRICTION = [20, 20, 20];
 
-const FRICTION = (20, 20, 20);
-
-const DRAG_FLY = (5, 5, 5);
-const DRAG_JUMP = (1.8, 0, 1.8);
-const DRAG_FALL = (1.8, 0.4, 1.8);
+const DRAG_FLY = [5, 5, 5];
+const DRAG_JUMP = [1.8, 0, 1.8];
+const DRAG_FALL = [1.8, 0.4, 1.8];
 
 
 class Entity {
@@ -34,7 +34,7 @@ class Entity {
         this.width = 0.6;
         this.height = 1.8;
 
-        this.collider = new Collider(this);
+        this.collider = new Collider();
         this.grounded = false;
     }
 
@@ -70,7 +70,7 @@ class Entity {
         this.velocity[1] = Math.sqrt(-2 * GRAVITY_ACCEL[1] * height);
     }
 
-    get fritction() {
+    get friction() {
         if (this.flying) {
             return DRAG_FLY;
         } else if (this.grounded) {
@@ -85,7 +85,7 @@ class Entity {
     update(deltaTime) {
         // apply input acceleration, and adjust for friction/drag
 
-        this.velocity = this.velocity.map((v, i) => v + this.accel[i] * this.fritction[i] * deltaTime);
+        this.velocity = this.velocity.map((v, i) => v + this.accel[i] * this.friction[i] * deltaTime);
         this.accel = [0, 0, 0];
 
         // compute collisions
@@ -104,19 +104,19 @@ class Entity {
             const step_y = vy > 0 ? 1 : -1;
             const step_z = vz > 0 ? 1 : -1;
 
-            const steps_xz = Math.ceil(this.width / 2);
-            const steps_y = Math.ceil(this.height);
+            const steps_xz = Math.floor(this.width / 2);
+            const steps_y = Math.floor(this.height);
 
             const [x, y, z] = this.position.map(Math.floor);
             const [cx, cy, cz] = this.position.map((v, i) => Math.floor(v + adjusted_velocity[i]));
 
             const potential_collisions = [];
 
-            for (let i = x - step_x * (steps_xz + 1); i <= cx + step_x * (steps_xz + 2); i += step_x) {
-                for (let j = y - step_y * (steps_y + 2); j <= cy + step_y * (steps_y + 3); j += step_y) {
-                    for (let k = z - step_z * (steps_xz + 1); k <= cz + step_z * (steps_xz + 2); k += step_z) {
+            for (let i = x - step_x * (steps_xz + 1); step_x > 0 ? i < cx + step_x * (steps_xz + 2) : i > cx + step_x * (steps_xz + 2); i += step_x) {
+                for (let j = y - step_y * (steps_y + 2); step_y > 0 ? j < cy + step_y * (steps_y + 3) : j > cy + step_y * (steps_y + 3); j += step_y) {
+                    for (let k = z - step_z * (steps_xz + 1); step_z > 0 ? k < cz + step_z * (steps_xz + 2) : k > cz + step_z * (steps_xz + 2); k += step_z) {
                         const pos = [i, j, k];
-                        const num = this.world.getBlock(pos);
+                        const num = this.world.getBlockNumber(pos);
 
                         if (!num) {
                             continue;
@@ -128,6 +128,8 @@ class Entity {
                             if (normal === null) {
                                 continue;
                             }
+
+                            console.log(`Collision at ${pos} with block ${num} at time ${entry_time} with normal ${normal}`);
 
                             potential_collisions.push([entry_time, normal]);
                         }
@@ -141,8 +143,8 @@ class Entity {
                 break;
             }
 
-            const [entry_time, normal] = potential_collisions.reduce((a, b) => a[0] < b[0] ? a : b);
-            entry_time -= 0.001;
+            const [entry_time_val, normal] = potential_collisions.reduce((a, b) => a[0] < b[0] ? a : b);
+            const entry_time = entry_time_val - 0.001;
 
             if (normal[0]) {
                 this.velocity[0] = 0;
@@ -173,7 +175,10 @@ class Entity {
 
         // apply friction/drag
 
-        this.velocity = this.velocity.map((v, i) => v - Math.min(v * this.fritction[i] * deltaTime, v, Math.abs));
+        this.velocity = this.velocity.map((v, i) => {
+            const decel = Math.min(Math.abs(v) * this.friction[i] * deltaTime, Math.abs(v));
+            return v - Math.sign(v) * decel;
+        });
 
         // make sure we can rely on the entity's collider outside of this function
 

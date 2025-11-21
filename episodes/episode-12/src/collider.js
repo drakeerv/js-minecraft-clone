@@ -1,16 +1,16 @@
 "use strict";
 
 class Collider {
-    constructor(pos1=(null, null, null), pos2=(null, null, null)) {
-        this.x1, this.y1, this.z1 = pos1;
-        this.x2, this.y2, this.z2 = pos2;
+    constructor(pos1 = [0, 0, 0], pos2 = [0, 0, 0]) {
+        [this.x1, this.y1, this.z1] = pos1;
+        [this.x2, this.y2, this.z2] = pos2;
     }
 
     // implement add for this class
     add(pos) {
         let [x, y, z] = pos;
 
-        return new Collider((this.x1 + x, this.y1 + y, this.z1 + z), (this.x2 + x, this.y2 + y, this.z2 + z));
+        return new Collider([this.x1 + x, this.y1 + y, this.z1 + z], [this.x2 + x, this.y2 + y, this.z2 + z]);
     }
 
     and(collider) {
@@ -25,14 +25,14 @@ class Collider {
         // this: the dynamic collider, which moves
         // collider: the static collider, which stays put
 
-        const no_collision = (1, null);
+        const no_collision = [1, null];
 
         // find entry & exit times for each axis
         
         const [vx, vy, vz] = velocity;
 
         function time(x, y) {
-            return y === 0 ? (x > 0 ? Infinity : -Infinity) : x / y;
+            return y === 0 ? (x > 0 ? -Infinity : Infinity) : x / y;
         }
 
         const x_entry = time(vx > 0 ? collider.x1 - this.x2 : collider.x2 - this.x1, vx);
@@ -69,7 +69,7 @@ class Collider {
         const ny = entry == y_entry ? (vy > 0 ? -1 : 1) : 0;
         const nz = entry == z_entry ? (vz > 0 ? -1 : 1) : 0;
         
-        return (entry, (nx, ny, nz));
+        return [entry, [nx, ny, nz]];
     }
 }
     

@@ -30,6 +30,10 @@ class PygletWindow {
     }
 
     run() {
+        const { width, height } = this.#getCanvasSize();
+        this.width = width;
+        this.height = height;
+
         this.init().then(() => {
             this.resize();
 
@@ -44,10 +48,19 @@ class PygletWindow {
         });
     }
 
+    #getCanvasSize() {
+        return {
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+    }
+
     resize() {
-        const { innerWidth: width, innerHeight: height } = window;
+        const { width, height } = this.#getCanvasSize();
         glInstance.canvas.width = width;
         glInstance.canvas.height = height;
+        this.width = width;
+        this.height = height;
         this.onResize(width, height);
     }
 

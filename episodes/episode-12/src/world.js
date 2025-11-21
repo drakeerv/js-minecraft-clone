@@ -118,16 +118,16 @@ class World {
 
     getBlockNumber(position) {
         const chunkPosition = this.getChunkPosition(position);
+        const chunkPositionString = chunkPosition.join(",");
 
-        if (!this.chunks[chunkPosition]) {
+        if (!this.chunks[chunkPositionString]) {
             return 0;
         }
 
         let lx, ly, lz;
         [lx, ly, lz] = this.getLocalPosition(position);
 
-        const blockNumber = this.chunks[chunkPosition].blocks[lx][ly][lz];
-        return blockNumber;
+        return this.chunks[chunkPositionString].blocks[lx][ly][lz];
     }
 
     isOpaqueBlock(position) {
@@ -147,14 +147,13 @@ class World {
         let x, y, z;
         [x, y, z] = position;
         const chunkPosition = this.getChunkPosition(position);
+        const chunkPositionString = chunkPosition.join(",");
 
-
-        if (!(chunkPosition in this.chunks)) { // if no chunks exist at this position, create a new one
+        if (!(chunkPositionString in this.chunks)) { // if no chunks exist at this position, create a new one
             if (number == 0) {
                 return; // no point in creating a whole new chunk if we're not gonna be adding anything
             }
-
-            this.chunks[chunkPosition] = new Chunk(this, chunkPosition);
+            this.chunks[chunkPositionString] = new Chunk(this, chunkPosition);
         }
 
         if (this.getBlockNumber(position) == number) { // no point updating mesh if the block is the same
@@ -163,8 +162,6 @@ class World {
 
         let lx, ly, lz;
         [lx, ly, lz] = this.getLocalPosition(position);
-
-        const chunkPositionString = chunkPosition.join(",");
 
         this.chunks[chunkPositionString].blocks[lx][ly][lz] = number;
         this.chunks[chunkPositionString].modified = true;

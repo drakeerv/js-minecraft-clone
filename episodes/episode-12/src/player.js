@@ -78,7 +78,7 @@ class Player extends Entity {
 
         this.mvMatrix.loadIdentity();
         this.mvMatrix.rotate2d(this.rotation[0] + Math.PI / 2, this.rotation[1]);
-        this.mvMatrix.translate(-this.position[0], -this.position[1], -this.position[2]);
+        this.mvMatrix.translate(-this.position[0], -this.position[1] - this.eyelevel, -this.position[2]);
 
         // modelviewprojection matrix
 
