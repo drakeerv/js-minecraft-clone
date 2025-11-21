@@ -90,10 +90,11 @@ class Window extends pygletAdapter.window.Window {
         }
 
         // handle breaking/placing blocks
+        console.log(`Mouse button ${button} pressed with modifiers ${modifiers}`);
 
         const hitCallback = (currentBlock, nextBlock) => {
             if (button == 2) {
-                this.world.try_set_block(currentBlock, this.holding, this.player.collider);
+                this.world.trySetBlock(currentBlock, this.holding, this.player.collider);
             } else if (button == 0) {
                 this.world.setBlock(nextBlock, 0);
             } else if (button == 1) {
@@ -104,7 +105,7 @@ class Window extends pygletAdapter.window.Window {
         let [x, y, z] = this.player.position;
         y += this.player.eyelevel;
 
-        const hitRay = new Hit(this.world, this.player.rotation, (x, y, z));
+        const hitRay = new Hit(this.world, this.player.rotation, [x, y, z]);
 
         while (hitRay.distance < hitRange) {
             if (hitRay.step(hitCallback)) {

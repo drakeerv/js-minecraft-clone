@@ -129,8 +129,6 @@ class Entity {
                                 continue;
                             }
 
-                            console.log(`Collision at ${pos} with block ${num} at time ${entry_time} with normal ${normal}`);
-
                             potential_collisions.push([entry_time, normal]);
                         }
                     }

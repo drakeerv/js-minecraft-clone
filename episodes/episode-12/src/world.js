@@ -209,7 +209,7 @@ class World {
 
         // make sure the block doesn't intersect with the passed collider
 
-        for (const blockCollider of this.blockTypes[num].model.colliders) {
+        for (const blockCollider of this.blockTypes[num].colliders) {
             if (collider.and(blockCollider.add(pos))) {
                 return;
             }
