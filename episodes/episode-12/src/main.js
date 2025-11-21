@@ -90,7 +90,6 @@ class Window extends pygletAdapter.window.Window {
         }
 
         // handle breaking/placing blocks
-        console.log(`Mouse button ${button} pressed with modifiers ${modifiers}`);
 
         const hitCallback = (currentBlock, nextBlock) => {
             if (button == 2) {
