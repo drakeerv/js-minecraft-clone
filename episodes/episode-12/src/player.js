@@ -10,8 +10,8 @@ class Player extends Entity {
     constructor(world, shader, width, height) {
         super(world);
 
-        this.view_width = width;
-        this.view_height = height;
+        this.viewWidth = width;
+        this.viewHeight = height;
 
         // create matrices
 
@@ -69,7 +69,7 @@ class Player extends Entity {
         this.pMatrix.loadIdentity();
         this.pMatrix.perspective(
             90 + 10 * (this.speed - WALKING_SPEED) / (SPRINTING_SPEED - WALKING_SPEED),
-			this.view_width / this.view_height,
+			this.viewWidth / this.viewHeight,
 			0.1,
 			500
         );
