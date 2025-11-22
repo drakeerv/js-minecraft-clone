@@ -34,6 +34,18 @@ class PygletWindow {
         this.width = width;
         this.height = height;
 
+
+        // STUPID HACK TO FIX FIREFOX POINTER LOCK BUG IN CROSS ORIGIN IFRAME (ON LINUX)
+        this.pointerLockPatch = false;
+        try {
+            window.top.location.href;
+        } catch (e) {
+            this.pointerLockPatch = navigator.userAgent.includes("Firefox") && navigator.userAgent.includes("Linux");
+            if (this.pointerLockPatch) {
+                console.warn("Applying pointer lock patch for Firefox on Linux");
+            }
+        }
+
         this.init().then(() => {
             this.resize();
 
@@ -104,9 +116,13 @@ class PygletWindow {
     async onMousePress(x, y, button) {}
 
     mouseMotion(event) {
-        // STUPID ASS BS PATCH FOR FIREFOX ON LINUX LOADING A IFRAME IN A CROSS-ORIGIN CONTEXT
-        if (Math.abs(event.movementX) > 300 || Math.abs(event.movementY) > 300) return;
-        this.onMouseMotion(event.clientX, event.clientY, event.movementX, -event.movementY);
+        let [dx, dy] = [event.movementX, event.movementY];
+        if (this.pointerLockPatch) {
+            dx += window.mozInnerScreenX || 0;
+            dy += window.mozInnerScreenY || 0;
+        }
+
+        this.onMouseMotion(event.clientX, event.clientY, dx, -dy);
     }
 
     async onMouseMotion(x, y, deltaX, deltaY) {}
