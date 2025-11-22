@@ -104,6 +104,8 @@ class PygletWindow {
     async onMousePress(x, y, button) {}
 
     mouseMotion(event) {
+        // STUPID ASS BS PATCH FOR FIREFOX ON LINUX LOADING A IFRAME IN A CROSS-ORIGIN CONTEXT
+        if (Math.abs(event.movementX) > 300 || Math.abs(event.movementY) > 300) return;
         this.onMouseMotion(event.clientX, event.clientY, event.movementX, -event.movementY);
     }
 
