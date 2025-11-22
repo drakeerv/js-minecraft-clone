@@ -78,8 +78,8 @@ class Window extends pygletAdapter.window.Window {
         console.log(`Resize ${width} * ${height}`);
         gl.viewport(0, 0, width, height);
 
-        this.player.view_width = width;
-        this.player.view_height = height;
+        this.player.viewWidth = width;
+        this.player.viewHeight = height;
     }
 
     async onMousePress(_x, _y, button, modifiers) {
